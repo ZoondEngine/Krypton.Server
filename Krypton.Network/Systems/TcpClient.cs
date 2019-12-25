@@ -14,9 +14,6 @@ namespace Krypton.Network.Systems
         public TcpClient(string ip, int port)
         {
             Service = new WatsonTcpClient(ip, port);
-            Service.ServerConnected = 
         }
-
-        private async Task 
     }
 }

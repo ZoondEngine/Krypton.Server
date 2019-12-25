@@ -158,6 +158,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Krypton.Network\Krypton.Network.csproj">
+      <Project>{DFBB8734-F58A-4AB7-BF03-BC9765485823}</Project>
+      <Name>Krypton.Network</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Krypton.Support\Krypton.Support.csproj">
       <Project>{6E5C5E73-3BC6-4A99-92D8-BB5908695D39}</Project>
       <Name>Krypton.Support</Name>

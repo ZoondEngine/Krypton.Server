@@ -47,18 +47,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography\Contracts\ICryptoProvider.cs" />
+    <Compile Include="Cryptography\Rijndael.cs" />
     <Compile Include="Details\TcpSession.cs" />
     <Compile Include="Packetize\BaseNetworkable.cs" />
+    <Compile Include="Packetize\Implemented\AuthRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\TcpClient.cs" />
     <Compile Include="Systems\TcpServer.cs" />
     <Compile Include="TcpFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="Routines\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Routines\" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

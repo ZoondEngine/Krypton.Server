@@ -1,16 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Krypton.Network.Packetize
 {
-    public abstract class BaseNetworkable
+    public enum Packets
     {
+        AuthRequest = 1,
+        AuthResponse = 2,
+
+
+    }
+
+    public class BaseNetworkable
+    {
+        protected const char DELIMETER = ':';
+
         public int Identifier { get; set; }
 
-        public abstract void Parse(string input);
+        public virtual void Parse(string input)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual string ToNetwork()
+        {
+            throw new NotImplementedException();
+        }
 
         public T Convert<T>() where T : BaseNetworkable
             => (T)this;
