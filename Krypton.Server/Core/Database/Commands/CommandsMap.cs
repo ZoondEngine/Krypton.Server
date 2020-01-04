@@ -13,6 +13,7 @@ namespace Krypton.Server.Core.Database.Commands
         {
             new KeyPacketsInfoCommand(),
             new KeyInfoCommand(),
+						new KeysClearOldCommand(),
         };
     }
 }

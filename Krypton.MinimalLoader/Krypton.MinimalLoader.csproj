@@ -33,8 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Jareem.Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\JareemH\Jareem.Network\bin\Debug\netstandard2.0\Jareem.Support.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,11 +49,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Hardware\HardwareComponent.cs" />
+    <Compile Include="Core\Hardware\LocaleContext.cs" />
+    <Compile Include="Core\Hardware\Subtypes\Archetype\BaseCaption.cs" />
+    <Compile Include="Core\Hardware\Subtypes\DiskDriveCaption.cs" />
+    <Compile Include="Core\Hardware\Subtypes\Archetype\IHardwareCaption.cs" />
+    <Compile Include="Core\Hardware\Subtypes\NetworkCaption.cs" />
+    <Compile Include="Core\Hardware\Subtypes\OSCaption.cs" />
+    <Compile Include="Core\Hardware\Subtypes\ProcessorCaption.cs" />
+    <Compile Include="Core\Hardware\Subtypes\VideoCaption.cs" />
+    <Compile Include="Core\Http\HttpComponent.cs" />
+    <Compile Include="Core\Network\NetworkComponent.cs" />
+    <Compile Include="Core\Network\SubscribersBootstrap.cs" />
+    <Compile Include="Core\Network\Subscribers\OnConnectHandler.cs" />
+    <Compile Include="Core\Security\Checks\BattleEyeCheck.cs" />
+    <Compile Include="Core\Security\Checks\Contracts\ISecurityCheck.cs" />
+    <Compile Include="Core\Security\Checks\DebuggerCheck.cs" />
+    <Compile Include="Core\Security\Checks\EasyAntiCheatCheck.cs" />
+    <Compile Include="Core\Security\Checks\SteamCheck.cs" />
+    <Compile Include="Core\Security\SecurityComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\JareemSys\Jareem.Network\Jareem.Network.csproj">
+      <Project>{3F5D7CE9-1AB8-4E5A-B291-9186EF2D75B6}</Project>
+      <Name>Jareem.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Krypton.Network\Krypton.Network.csproj">
+      <Project>{DFBB8734-F58A-4AB7-BF03-BC9765485823}</Project>
+      <Name>Krypton.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Krypton.Support\Krypton.Support.csproj">
+      <Project>{6E5C5E73-3BC6-4A99-92D8-BB5908695D39}</Project>
+      <Name>Krypton.Support</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

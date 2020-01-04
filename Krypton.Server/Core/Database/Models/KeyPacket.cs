@@ -8,30 +8,42 @@ using System.Threading.Tasks;
 
 namespace Krypton.Server.Core.Database.Models
 {
-    [Table("key_packets")]
-    public class KeyPacket
-    {
-        [Column("id")]
-        [Key]
-        public int Identifier { get; set; }
-        [Column("name")]
-        public string Name { get; set; }
-        [Column("region")]
-        public int RegionCode { get; set; }
-        [Column("owner")]
-        public int OwnerId { get; set; }
-        [Column("blocked")]
-        public int Blocked { get; set; }
-        [Column("freezed")]
-        public int Freezed { get; set; }
-        [Column("generated_date")]
-        public DateTime GeneratedStamp { get; set; }
-        [Column("keys_file_link")]
-        public string FileUrl { get; set; }
+	[Table("key_packets")]
+	public class KeyPacket
+	{
+		[Key]
+		[Column("id")]
+		public int Identifier { get; set; }
+		[Column("name")]
+		public string Name { get; set; }
+		[Column("region")]
+		public int RegionCode { get; set; }
+		[Column("owner")]
+		public int OwnerId { get; set; }
+		[Column("blocked")]
+		public int? Blocked { get; set; }
+		[Column("freezed")]
+		public int? Freezed { get; set; }
 
-        public List<Key> GetKeys()
-        {
-            return DatabaseMgr.Instance.GetKeysContext().Keys.Where((x) => x.PacketId == Identifier).ToList();
-        }
-    }
+		[Column("generated_date")]
+		public DateTime? GeneratedStamp { get; set; }
+
+		[Column("keys_file_link")]
+		public string FileUrl { get; set; }
+
+		public List<Key> GetKeys()
+		{
+			return DatabaseMgr.Instance.GetKeysContext().Keys.Where((x) => x.PacketId == Identifier).ToList();
+		}
+
+		public bool IsBlocked()
+		{
+			if(Blocked.HasValue)
+			{
+				return Blocked.Value == 1;
+			}
+
+			return true;
+		}
+	}
 }

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krypton.Logging", "Krypton.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krypton.MinimalLoader", "Krypton.MinimalLoader\Krypton.MinimalLoader.csproj", "{597C5332-03EF-4C65-8404-505261E91614}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jareem.Network", "..\JareemSys\Jareem.Network\Jareem.Network.csproj", "{3F5D7CE9-1AB8-4E5A-B291-9186EF2D75B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{597C5332-03EF-4C65-8404-505261E91614}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{597C5332-03EF-4C65-8404-505261E91614}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{597C5332-03EF-4C65-8404-505261E91614}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F5D7CE9-1AB8-4E5A-B291-9186EF2D75B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F5D7CE9-1AB8-4E5A-B291-9186EF2D75B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F5D7CE9-1AB8-4E5A-B291-9186EF2D75B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F5D7CE9-1AB8-4E5A-B291-9186EF2D75B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

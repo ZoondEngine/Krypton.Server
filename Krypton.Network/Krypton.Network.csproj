@@ -53,6 +53,7 @@
     <Compile Include="Packetize\BaseNetworkable.cs" />
     <Compile Include="Packetize\Implemented\AuthRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\BaseTcp.cs" />
     <Compile Include="Systems\TcpClient.cs" />
     <Compile Include="Systems\TcpServer.cs" />
     <Compile Include="TcpFactory.cs" />

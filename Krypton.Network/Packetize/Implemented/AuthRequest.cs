@@ -11,20 +11,5 @@ namespace Krypton.Network.Packetize.Implemented
         {
             Identifier = (int)Packets.AuthRequest;
         }
-
-        public override void Parse(string input)
-        {
-            var splitted = input.Split(DELIMETER);
-            if(splitted.Length > 3)
-            {
-                HWID = splitted[1];
-                Key  = splitted[2];
-            }
-        }
-
-        public override string ToNetwork()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

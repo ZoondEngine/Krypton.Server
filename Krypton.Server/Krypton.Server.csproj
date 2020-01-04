@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Jareem.Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\JareemH\Jareem.Network\bin\Debug\netstandard2.0\Jareem.Support.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -137,6 +141,7 @@
     <Compile Include="Core\Database\Commands\DatabaseHelpCommand.cs" />
     <Compile Include="Core\Database\Commands\KeyInfoCommand.cs" />
     <Compile Include="Core\Database\Commands\KeyPacketsInfoCommand.cs" />
+    <Compile Include="Core\Database\Commands\KeysClearOldCommand.cs" />
     <Compile Include="Core\Database\Contexts\JournalContext.cs" />
     <Compile Include="Core\Database\Contexts\KeysContext.cs" />
     <Compile Include="Core\Database\DatabaseMgr.cs" />
@@ -149,6 +154,13 @@
     <Compile Include="Core\IO\Contracts\ICommandElement.cs" />
     <Compile Include="Core\IO\IOMgr.cs" />
     <Compile Include="Core\IO\Print\PrintThread.cs" />
+    <Compile Include="Core\Network\BootstrapHelper.cs" />
+    <Compile Include="Core\Network\Boots\Contracts\IServerNetworkModule.cs" />
+    <Compile Include="Core\Network\Boots\NetworkCommands\OnConnectionCommand.cs" />
+    <Compile Include="Core\Network\Boots\NetworkCommands\OnSetGuidCommand.cs" />
+    <Compile Include="Core\Network\Boots\NetworkCommands\OnSetKeyCommand.cs" />
+    <Compile Include="Core\Network\Boots\NetworkHandlers\PacketsBootHandler.cs" />
+    <Compile Include="Core\Network\NetworkComponent.cs" />
     <Compile Include="ServerBootstrap.cs" />
     <Compile Include="ServerEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -158,6 +170,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JareemSys\Jareem.Network\Jareem.Network.csproj">
+      <Project>{3f5d7ce9-1ab8-4e5a-b291-9186ef2d75b6}</Project>
+      <Name>Jareem.Network</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Krypton.Network\Krypton.Network.csproj">
       <Project>{DFBB8734-F58A-4AB7-BF03-BC9765485823}</Project>
       <Name>Krypton.Network</Name>
@@ -169,7 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Control\" />
-    <Folder Include="Core\Network\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

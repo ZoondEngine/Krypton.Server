@@ -17,8 +17,8 @@ namespace Krypton.Server.Core.Database.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseMySql("server=localhost;UserId=root;Password=;database=evilcorp;");
-            options.UseLoggerFactory(DatabaseLoggerFactory);
+            options.UseMySql("server=localhost;UserId=root;Password=12589635;database=evilcorp;");
+            //options.UseLoggerFactory(DatabaseLoggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -26,7 +26,7 @@ namespace Krypton.Server.Core.Database.Contexts
             base.OnModelCreating(builder);
         }
 
-        public static readonly ILoggerFactory DatabaseLoggerFactory
-            = LoggerFactory.Create(builder => builder.AddProvider(new KeysContextLogger()));
+        //public static readonly ILoggerFactory DatabaseLoggerFactory
+        //    = LoggerFactory.Create(builder => builder.AddProvider(new KeysContextLogger()));
     }
 }
