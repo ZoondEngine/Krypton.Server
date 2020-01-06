@@ -17,11 +17,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>krypton_transparent.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Jareem.Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -59,6 +63,8 @@
     <Compile Include="Core\Hardware\Subtypes\ProcessorCaption.cs" />
     <Compile Include="Core\Hardware\Subtypes\VideoCaption.cs" />
     <Compile Include="Core\Http\HttpComponent.cs" />
+    <Compile Include="Core\Native\InjectionComponent.cs" />
+    <Compile Include="Core\Native\NativeProcedures.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
     <Compile Include="Core\Network\SubscribersBootstrap.cs" />
     <Compile Include="Core\Network\Subscribers\OnConnectHandler.cs" />
@@ -88,6 +94,8 @@
       <Name>Krypton.Support</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="krypton_transparent.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

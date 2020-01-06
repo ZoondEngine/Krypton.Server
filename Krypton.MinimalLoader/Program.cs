@@ -1,10 +1,12 @@
 ﻿using Jareem.Network.Packets.KeyAuth;
 using Krypton.MinimalLoader.Core.Hardware;
 using Krypton.MinimalLoader.Core.Http;
+using Krypton.MinimalLoader.Core.Native;
 using Krypton.MinimalLoader.Core.Network;
 using Krypton.MinimalLoader.Core.Security;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Krypton.MinimalLoader
 {
@@ -54,15 +56,22 @@ namespace Krypton.MinimalLoader
 						var http = HttpComponent.Instance;
 						if(http.Download(packet.TempDownloadString, out string path))
 						{
-							ChangeColor(ConsoleColor.Green);
-							Console.WriteLine("OK");
-							Console.ResetColor();
+							var injection = InjectionComponent.Instance;
+							if(injection.SetupInjection(path, "sihost.exe").Inject())
+							{
+								ChangeColor(ConsoleColor.Green);
+								Console.WriteLine("OK");
+								Console.ResetColor();
 
-							Console.WriteLine($"Expiration date: {packet.RemainingTime}");
-
-							Process.Start(path);
-							Console.WriteLine("Ready. Open steam and start game");
-							Console.WriteLine("Press any key for continue");
+								Console.WriteLine($"Expiration date: {packet.RemainingTime}");
+							}
+							else
+							{
+								ChangeColor(ConsoleColor.Red);
+								Console.WriteLine("ERROR");
+								Console.WriteLine("Error message: Server technical failure. Try again later.");
+								Console.ResetColor();
+							}
 						}
 						else
 						{
@@ -96,7 +105,7 @@ namespace Krypton.MinimalLoader
 			}
 
 			Console.ResetColor();
-			Console.ReadKey();
+			Task.Delay(3000).GetAwaiter();
 		}
 
 		private static bool CheckSecurity(out string message)
