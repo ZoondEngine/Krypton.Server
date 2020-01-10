@@ -11,16 +11,22 @@ namespace Krypton.MinimalLoader.Core.Native
 		private NativeProcedures Native;
 		private string DllPath;
 		private string ProcessName;
+		private Process NotepadProcess;
 
 		public InjectionComponent()
 		{
 			Native = new NativeProcedures();
 		}
 
-		public InjectionComponent SetupInjection(string dll_path, string process_name)
+		public InjectionComponent SetupInjection(string dll_path, string process_name, Process proc = null)
 		{
 			DllPath = dll_path;
 			ProcessName = process_name;
+
+			if(proc != null)
+			{
+				NotepadProcess = proc;
+			}
 
 			return this;
 		}
@@ -32,11 +38,26 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			var handle = GetHandle();
+			//Console.WriteLine("DllPath &  ProcessName Valid");
+			//Console.WriteLine($"DllPath: {DllPath}");
+			//Console.WriteLine($"Process: {ProcessName}");
+
+			IntPtr handle;
+			if(NotepadProcess != null)
+			{
+				handle = NotepadProcess.Handle;
+			}
+			else
+			{
+				handle = GetHandle();
+			}
+
 			if(handle == IntPtr.Zero)
 			{
 				return false;
 			}
+
+			//Console.WriteLine($"{ProcessName}: Handle: [0x{handle.ToString("X16")}]");
 
 			var load_library = GetLoadLibaryAddress();
 			if(load_library == IntPtr.Zero)
@@ -44,20 +65,23 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
+			//Console.WriteLine($"{ProcessName}: LoadLibraryA: [0x{load_library.ToString("X16")}]");
+
 			var allocated = Native.VirtualAllocEx(handle, IntPtr.Zero, CalculateDllSize(), NativeProcedures.AllocationType.MemoryCommit | NativeProcedures.AllocationType.MemoryReserve, NativeProcedures.AllocationProtect.PageReadWrite);
 			if(allocated == IntPtr.Zero)
 			{
 				return false;
 			}
 
-			var result = Native.WriteProcessMemory(handle, allocated, Encoding.Default.GetBytes(DllPath), CalculateDllSize(), out var written);
+			//Console.WriteLine($"{ProcessName}: Allocated: [0x{allocated.ToString("X16")}]");
+
+			var result = Native.WriteProcessMemoryIn(handle, allocated, Encoding.Default.GetBytes(DllPath), CalculateDllSize(), out var written);
 
 			if(result)
 			{
-				if (written != UIntPtr.Zero)
-				{
-					Native.CreateRemoteThread(handle, IntPtr.Zero, 0, load_library, allocated, 0, IntPtr.Zero);
-				}
+				//Console.WriteLine($"{ProcessName}: Written bytes: {written}");
+
+				Native.CreateRemoteThreadIn(handle, IntPtr.Zero, 0, load_library, allocated, 0, IntPtr.Zero);
 			}
 
 			return result;
@@ -65,7 +89,13 @@ namespace Krypton.MinimalLoader.Core.Native
 
 		private IntPtr GetHandle()
 		{
-			var process = Process.GetProcessesByName(ProcessName)[0];
+			var processes = Process.GetProcessesByName(ProcessName);
+			if(processes.Length <= 0)
+			{
+				return IntPtr.Zero;
+			}
+
+			var process = processes[0];
 			if (process == null)
 			{
 				return IntPtr.Zero;
@@ -75,13 +105,13 @@ namespace Krypton.MinimalLoader.Core.Native
 		}
 		private IntPtr GetLoadLibaryAddress()
 		{
-			var module = Native.GetModuleHandle("kernel32.dll");
+			var module = Native.GetModuleHandleIn("kernel32.dll");
 			if(module == IntPtr.Zero)
 			{
 				return IntPtr.Zero;
 			}
 
-			return Native.GetProcAddress(module, "LoadLibraryA");
+			return Native.GetProcAddressIn(module, "LoadLibraryA");
 		}
 		private uint CalculateDllSize()
 			=> (uint)((DllPath.Length + 1) * Marshal.SizeOf(typeof(char)));

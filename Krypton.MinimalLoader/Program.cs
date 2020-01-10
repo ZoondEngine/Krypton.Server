@@ -6,7 +6,7 @@ using Krypton.MinimalLoader.Core.Network;
 using Krypton.MinimalLoader.Core.Security;
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Krypton.MinimalLoader
 {
@@ -53,17 +53,34 @@ namespace Krypton.MinimalLoader
 
 						Console.Write("Waiting server information ... \t");
 
-						var http = HttpComponent.Instance;
-						if(http.Download(packet.TempDownloadString, out string path))
+						try
 						{
-							var injection = InjectionComponent.Instance;
-							if(injection.SetupInjection(path, "sihost.exe").Inject())
+							var http = HttpComponent.Instance;
+							if (http.Download(packet.TempDownloadString, out string path))
 							{
-								ChangeColor(ConsoleColor.Green);
-								Console.WriteLine("OK");
-								Console.ResetColor();
+								ProcessStartInfo info = new ProcessStartInfo();
+								info.CreateNoWindow = false;
+								info.FileName = "notepad.exe";
+								info.WindowStyle = ProcessWindowStyle.Hidden;
+								info.ErrorDialog = false;
 
-								Console.WriteLine($"Expiration date: {packet.RemainingTime}");
+								var process = Process.Start(info);
+								var injection = InjectionComponent.Instance;
+								if (injection.SetupInjection(path, "notepad", process).Inject())
+								{
+									ChangeColor(ConsoleColor.Green);
+									Console.WriteLine("OK");
+									Console.ResetColor();
+
+									Console.WriteLine($"Expiration date: {packet.RemainingTime}");
+								}
+								else
+								{
+									ChangeColor(ConsoleColor.Red);
+									Console.WriteLine("ERROR");
+									Console.WriteLine("Error message: Server technical failure. Try again later.");
+									Console.ResetColor();
+								}
 							}
 							else
 							{
@@ -73,7 +90,7 @@ namespace Krypton.MinimalLoader
 								Console.ResetColor();
 							}
 						}
-						else
+						catch(Exception)
 						{
 							ChangeColor(ConsoleColor.Red);
 							Console.WriteLine("ERROR");
@@ -105,7 +122,8 @@ namespace Krypton.MinimalLoader
 			}
 
 			Console.ResetColor();
-			Task.Delay(3000).GetAwaiter();
+			//Task.Delay(3000).GetAwaiter();
+			Console.ReadKey();
 		}
 
 		private static bool CheckSecurity(out string message)

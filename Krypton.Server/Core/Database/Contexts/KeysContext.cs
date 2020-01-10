@@ -17,7 +17,7 @@ namespace Krypton.Server.Core.Database.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseMySql("server=localhost;UserId=root;Password=12589635;database=evilcorp;");
+            options.UseMySql("server=localhost;UserId=root;Password=12589635Ff;database=evilcorp;");
             //options.UseLoggerFactory(DatabaseLoggerFactory);
         }
 

@@ -13,7 +13,7 @@ namespace Krypton.Server.Core.Network
 
 		public NetworkComponent()
 		{
-			Service = ServerFactory.CreateTcpServer("127.0.0.1", 8789);
+			Service = ServerFactory.CreateTcpServer("194.87.109.35", 8789);
 		}
 
 		public void OnServerInitialized(IOMgr io)
