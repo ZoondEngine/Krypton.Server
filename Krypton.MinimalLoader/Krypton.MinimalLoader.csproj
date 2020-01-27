@@ -103,6 +103,7 @@
     <Compile Include="Core\Http\HttpComponent.cs" />
     <Compile Include="Core\Native\InjectionComponent.cs" />
     <Compile Include="Core\Native\NativeProcedures.cs" />
+    <Compile Include="Core\Native\ProcessStarterComponent.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
     <Compile Include="Core\Network\SubscribersBootstrap.cs" />
     <Compile Include="Core\Network\Subscribers\OnConnectHandler.cs" />

