@@ -28,7 +28,6 @@ namespace Krypton.MinimalLoader
 					Console.ResetColor();
 
 					var hardware = HardwareComponent.Instance;
-					Console.WriteLine(hardware.BuildLog());
 
 					Console.Write("Enter your key: ");
 					var key = Console.ReadLine();

@@ -73,7 +73,7 @@ namespace Krypton.MinimalLoader.Core.Hardware
 			{
 				try
 				{
-					log += $"{process.ProcessName} ID-{process.Id} HANDLE-0x{process.Handle.ToString("X4")}_PROCESS;\n";
+					log += $"{process.ProcessName} ID-{process.Id} HANDLE-0x{process.Handle.ToString("X4")}_PROCESS;";
 
 					//Very much  more infos
 					//log += $"{process.ProcessName} modules: \n";
