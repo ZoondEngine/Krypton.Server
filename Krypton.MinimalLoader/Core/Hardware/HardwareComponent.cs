@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Krypton.MinimalLoader.Core.Hardware.Subtypes;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Krypton.MinimalLoader.Core.Hardware
 {
@@ -36,6 +37,59 @@ namespace Krypton.MinimalLoader.Core.Hardware
 		}
 		public LocaleContext GetLocale()
 			=> Locale;
+
+		public string BuildLog()
+		{
+			string log = "";
+
+			var network = GetCaption<NetworkCaption>();
+			var disk = GetCaption<DiskDriveCaption>();
+			var processor = GetCaption<ProcessorCaption>();
+			var os = GetCaption<OSCaption>();
+			var video = GetCaption<VideoCaption>();
+
+			/* Building network */
+			log += network.GetMacAddress().Trim() + "_NETWORK;";
+			log += network.GetServiceName().Trim() + "_NETWORK;";
+
+			/* Building hard drive */
+			log += disk.GetInterfaceType().Trim() + "_HDD;";
+			log += disk.GetManufacturer().Trim() + "_HDD;";
+			log += disk.GetModel().Trim() + "_HDD;";
+			log += disk.GetSerialNumber().Trim() + "_HDD;";
+
+			/* Building processor */
+			log += processor.GetProcessorId().Trim() + "_PROCESSOR;";
+			log += processor.GetProcessorName().Trim() + "_PROCESSOR;";
+
+			/* Building os */
+			log += os.GetFreePhysicalMemory().Trim() + "_OpSy;";
+			log += os.GetSerialNumber().Trim() + "_OpSy;";
+			log += os.GetVersion().Trim() + "_OpSy;";
+
+			/* Building processes list */
+			var processes = Process.GetProcesses();
+			foreach(var process in processes)
+			{
+				try
+				{
+					log += $"{process.ProcessName} ID-{process.Id} HANDLE-0x{process.Handle.ToString("X4")}_PROCESS;\n";
+
+					//Very much  more infos
+					//log += $"{process.ProcessName} modules: \n";
+					//foreach (ProcessModule module in process.Modules)
+					//{
+					//	log += $" -- MODULE-{module.ModuleName}+FILE-{module.FileName}+BASEADDRESS-{module.BaseAddress.ToString("X16")};\n";
+					//}
+				}
+				catch
+				{
+					continue;
+				}
+			}
+
+			return log;
+		}
 
 		private List<IHardwareCaption> GetImplementedCaptions()
 		{

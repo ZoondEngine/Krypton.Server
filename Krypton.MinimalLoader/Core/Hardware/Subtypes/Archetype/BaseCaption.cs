@@ -13,17 +13,24 @@ namespace Krypton.MinimalLoader.Core.Hardware.Subtypes
 
 		public T Get<T>(string key)
 		{
-			foreach(var base_object in GetSearcher().Get())
+			try
 			{
-				var management_object = (ManagementObject)base_object;
-				if(management_object != null)
+				foreach (var base_object in GetSearcher().Get())
 				{
-					return (T)management_object[key];
+					var management_object = (ManagementObject)base_object;
+					if (management_object != null)
+					{
+						return (T)management_object[key];
+					}
 				}
+
+
+				return default;
 			}
-
-
-			return (T)(object)null;
+			catch
+			{
+				return default;
+			}
 		}
 
 		public ManagementObjectSearcher GetSearcher()

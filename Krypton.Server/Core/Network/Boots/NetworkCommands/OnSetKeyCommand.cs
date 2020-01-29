@@ -44,41 +44,30 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 							{
 								if (db_key.RegionCode == packet.LocaleCode)
 								{
-									if (db_key.Hardware == null | db_key.Hardware == "")
+									var between = DateTime.Now.Day - packet.ActivateDate.Day;
+									if (between < 1 && between == 0)
 									{
-										if(db_key.EndAt == null & db_key.ActivatedAt == null)
+										if (db_key.Hardware == null | db_key.Hardware == "")
 										{
-											db_key.ActivatedAt = DateTime.Now;
-											db_key.EndAt = DateTime.Now.AddDays(db_key.Days);
+											if (db_key.EndAt == null & db_key.ActivatedAt == null)
+											{
+												db_key.ActivatedAt = packet.ActivateDate;
+												db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
+											}
+
+											db_key.Hardware = packet.Hardware;
+
+											result = true;
+											temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+											remaining = db_key.EndAt.Value;
+
+											keys_context.SaveChanges();
 										}
-
-										db_key.Hardware = packet.Hardware;
-
-										result = true;
-										temp_download = "http://krypton.vcn-premium.ru/storage/storage/app/updated/loader.exe";
-										remaining = db_key.EndAt.Value;
-
-										keys_context.SaveChanges();
 									}
 									else
 									{
-										if (db_key.Hardware == packet.Hardware)
-										{
-											if (db_key.EndAt.HasValue & db_key.EndAt.Value >= DateTime.Now)
-											{
-												result = true;
-												temp_download = "http://krypton.vcn-premium.ru/storage/storage/app/updated/loader.exe";
-												remaining = db_key.EndAt.Value;
-											}
-											else
-											{
-												message = "Key has expired";
-											}
-										}
-										else
-										{
-											message = "Hardware identifiers not equal";
-										}
+										message = "Unknown time difficult exception";
+										temp_download = "nil";
 									}
 								}
 								else

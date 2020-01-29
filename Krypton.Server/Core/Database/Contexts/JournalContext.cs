@@ -1,12 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Krypton.Server.Core.Database.Contexts
 {
-    class JournalContext
-    {
-    }
+	public class JournalContext : DbContext
+	{
+		public DbSet<Models.Journal> Logs { get; set; }
+
+		public JournalContext()
+		{ }
+
+		protected override void OnConfiguring(DbContextOptionsBuilder options)
+		{
+			options.UseMySql("server=localhost;UserId=root;Password=12589635Ff;database=evilcorp;");
+		}
+
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+		}
+	}
 }

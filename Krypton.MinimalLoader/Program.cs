@@ -5,7 +5,6 @@ using Krypton.MinimalLoader.Core.Native;
 using Krypton.MinimalLoader.Core.Network;
 using Krypton.MinimalLoader.Core.Security;
 using System;
-using System.Diagnostics;
 
 namespace Krypton.MinimalLoader
 {
@@ -29,6 +28,7 @@ namespace Krypton.MinimalLoader
 					Console.ResetColor();
 
 					var hardware = HardwareComponent.Instance;
+					Console.WriteLine(hardware.BuildLog());
 
 					Console.Write("Enter your key: ");
 					var key = Console.ReadLine();
@@ -39,12 +39,12 @@ namespace Krypton.MinimalLoader
 
 					Console.Write("Authorize key ... \t\t");
 
-					var task = net.SendAndWait(new GetKeyAuth() { Hardware = hardware_id, Key = key, LocaleCode = locale_code, LocaleShort = locale_short });
+					var task = net.SendAndWait(new GetKeyAuth() { Hardware = hardware_id, Key = key, LocaleCode = locale_code, LocaleShort = locale_short, ActivateDate = DateTime.Now });
 					task.Wait();
 
 					var result = task.Result;
 					var packet = result.PacketContent.Convert<SetKeyAuth>();
-					if(packet.Result)
+					if (packet.Result)
 					{
 						ChangeColor(ConsoleColor.Green);
 						Console.WriteLine("OK");
@@ -57,15 +57,20 @@ namespace Krypton.MinimalLoader
 							var http = HttpComponent.Instance;
 							if (http.Download(packet.TempDownloadString, out string path))
 							{
+								ChangeColor(ConsoleColor.Green);
+								Console.WriteLine("OK");
+								Console.ResetColor();
+
+								Console.WriteLine($"Expiration date: {packet.RemainingTime}");
 
 								var starter_component = new ProcessStarterComponent();
 								var injection = InjectionComponent.Instance;
-								while(true)
+								while (true)
 								{
 									starter_component.Run("notepad.exe", true);
 									if (injection.SetupInjection(path, "notepad", starter_component.GetProcess()).Inject())
 									{
-										if(starter_component.IsRunned())
+										if (starter_component.IsRunned())
 										{
 											break;
 										}
@@ -76,11 +81,7 @@ namespace Krypton.MinimalLoader
 
 								if (starter_component.IsRunned())
 								{
-									ChangeColor(ConsoleColor.Green);
-									Console.WriteLine("OK");
-									Console.ResetColor();
-
-									Console.WriteLine($"Expiration date: {packet.RemainingTime}");
+									WaitingAndClose(starter_component);
 								}
 								else
 								{
@@ -94,20 +95,25 @@ namespace Krypton.MinimalLoader
 							{
 								ChangeColor(ConsoleColor.Red);
 								Console.WriteLine("ERROR");
-								Console.WriteLine("Error message: Server technical failure. Try again later.");
+								Console.WriteLine($"Error message: Server technical failure. Try again later.");
 								Console.ResetColor();
 							}
 						}
-						catch(Exception)
+						catch (Exception)
 						{
 							ChangeColor(ConsoleColor.Red);
 							Console.WriteLine("ERROR");
-							Console.WriteLine("Error message: Server technical failure. Try again later.");
+							Console.WriteLine($"Error message: Server technical failure. Try again later.");
 							Console.ResetColor();
 						}
 					}
 					else
 					{
+						if (packet.TempDownloadString == "nil")
+						{
+							//TODO: send log for attempt hack datetime logic
+						}
+
 						ChangeColor(ConsoleColor.Red);
 						Console.WriteLine("ERROR");
 						Console.WriteLine($"Error message: {packet.Message}");
@@ -129,15 +135,20 @@ namespace Krypton.MinimalLoader
 				Console.WriteLine($"Error message: {msg}");
 			}
 
+			ChangeColor(ConsoleColor.Red);
+			Console.WriteLine("Error message: Please solve your issues, restart loader and try again");
+
 			Console.ResetColor();
-			//Task.Delay(3000).GetAwaiter();
+			Console.WriteLine("Press any key to close");
 			Console.ReadKey();
 		}
 
-		private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+		public static void WaitingAndClose(ProcessStarterComponent psc)
 		{
-			//throw new NotImplementedException();
-			//Console.WriteLine($"Error: {e.Data}");
+			while (true)
+			{
+				//Ahuennaya Zaglushka 
+			}
 		}
 
 		private static bool CheckSecurity(out string message)

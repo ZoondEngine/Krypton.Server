@@ -11,9 +11,7 @@ namespace Krypton.Server.Core.Database.Contexts
         public DbSet<Key> Keys { get; set; }
 
         public KeysContext()
-        {
-
-        }
+        { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

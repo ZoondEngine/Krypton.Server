@@ -9,10 +9,10 @@ namespace Krypton.MinimalLoader.Core.Hardware.Subtypes
 		{ }
 
 		public string GetFreePhysicalMemory()
-			=> Get<string>("FreePhysicalMemory");
+			=> Get<long>("FreePhysicalMemory").ToString();
 
 		public string GetMark()
-			=> Convert.ToInt32(GetFreePhysicalMemory()) > 7000000 ? "Suitable" : "Non suitable";
+			=> Convert.ToInt64(GetFreePhysicalMemory()) > 7000000 ? "Suitable" : "Non suitable";
 
 		public string GetName()
 			=> Get<string>("Name");

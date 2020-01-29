@@ -18,7 +18,7 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 
 		public bool Check(out string message)
 		{
-			if(Debugger.IsAttached || IsDebuggerPresent())
+			if (Debugger.IsAttached || IsDebuggerPresent())
 			{
 				message = "Debugger detected. Your PC information has been sended on server for analyze";
 				return false;
@@ -28,7 +28,7 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 				bool attached = false;
 				CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref attached);
 
-				if(attached)
+				if (attached)
 				{
 					message = "Debugger detected. Your PC information has been sended on server for analyze";
 					return false;

@@ -171,6 +171,7 @@
     <Compile Include="Core\Database\Contexts\KeysContext.cs" />
     <Compile Include="Core\Database\DatabaseMgr.cs" />
     <Compile Include="Core\Database\Logging\KeysContextLogger.cs" />
+    <Compile Include="Core\Database\Models\Journal.cs" />
     <Compile Include="Core\Database\Models\Key.cs" />
     <Compile Include="Core\Database\Models\KeyPacket.cs" />
     <Compile Include="Core\IO\Commands\CommandThread.cs" />
@@ -179,10 +180,17 @@
     <Compile Include="Core\IO\Contracts\ICommandElement.cs" />
     <Compile Include="Core\IO\IOMgr.cs" />
     <Compile Include="Core\IO\Print\PrintThread.cs" />
+    <Compile Include="Core\Journaling\JournalComponent.cs" />
+    <Compile Include="Core\Journaling\Types\DriveStamp.cs" />
+    <Compile Include="Core\Journaling\Types\NetworkStamp.cs" />
+    <Compile Include="Core\Journaling\Types\OperatingSystemStamp.cs" />
+    <Compile Include="Core\Journaling\Types\ProcessorStamp.cs" />
+    <Compile Include="Core\Journaling\Types\VideoStamp.cs" />
     <Compile Include="Core\Network\BootstrapHelper.cs" />
     <Compile Include="Core\Network\Boots\Contracts\IServerNetworkModule.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnConnectionCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnSetGuidCommand.cs" />
+    <Compile Include="Core\Network\Boots\NetworkCommands\OnSetJournalCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnSetKeyCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkHandlers\PacketsBootHandler.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
