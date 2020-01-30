@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace Krypton.MinimalLoader.Core.Security.Checks
 {
@@ -9,11 +11,24 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 			var processes = Process.GetProcessesByName("notepad");
 			if (processes.Length > 0)
 			{
-				foreach(var process in processes)
+				foreach (var process in processes)
 				{
 					process.Kill();
 					process.Dispose();
 				}
+			}
+
+			try
+			{
+				if (Directory.Exists("temporary"))
+				{
+					Directory.Delete("temporary", true);
+				}
+			}
+			catch
+			{
+				message = "Restart loader please and try again (0x00000371)";
+				return false;
 			}
 
 			message = "";

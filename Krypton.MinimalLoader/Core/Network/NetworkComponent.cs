@@ -30,11 +30,6 @@ namespace Krypton.MinimalLoader.Core.Network
 			try
 			{
 				Service.Connect();
-				//var task = Service.SendAndWait(new GetGuidPacket());
-				//task.Wait();
-
-				//var result = task.Result;
-				//result.Connection.ChangeGuid(result.PacketContent.Convert<SetGuidPacket>().AcceptedGuid);
 
 				return true;
 			}

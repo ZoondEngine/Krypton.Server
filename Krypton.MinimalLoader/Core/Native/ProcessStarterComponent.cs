@@ -31,13 +31,21 @@ namespace Krypton.MinimalLoader.Core.Native
 			{
 				m_waiting_thread = new Thread(() =>
 				{
-					Console.WriteLine("Waiting for a game ...");
+					Console.WriteLine("Please wait ...");
 
 					Stopwatch watcher = new Stopwatch();
 					watcher.Start();
 
-					m_process.WaitForExit();
-					var code = m_process.ExitCode;
+					var code = 0;
+					m_process.WaitForExit(5000);
+					try
+					{
+						code = m_process.ExitCode;
+					}
+					catch
+					{
+						code = 0;
+					}
 
 					watcher.Stop();
 					if(watcher.Elapsed.Seconds < 3)
@@ -45,15 +53,11 @@ namespace Krypton.MinimalLoader.Core.Native
 						code = -1;
 					}
 
-					if(Directory.Exists("temporary"))
-					{
-						Directory.Delete("temporary", true);
-					}
-
 					if(code == 0)
 					{
-						Console.WriteLine($"Normal log here");
+						Console.WriteLine("Done. Close loader and start the game");
 						Console.ReadKey();
+
 						//TODO: normal exit log
 					}
 					else

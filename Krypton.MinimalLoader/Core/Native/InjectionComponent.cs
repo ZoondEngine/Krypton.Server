@@ -38,10 +38,6 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			//Console.WriteLine("DllPath &  ProcessName Valid");
-			//Console.WriteLine($"DllPath: {DllPath}");
-			//Console.WriteLine($"Process: {ProcessName}");
-
 			IntPtr handle;
 			if(NotepadProcess != null)
 			{
@@ -57,15 +53,11 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			//Console.WriteLine($"{ProcessName}: Handle: [0x{handle.ToString("X16")}]");
-
 			var load_library = GetLoadLibaryAddress();
 			if(load_library == IntPtr.Zero)
 			{
 				return false;
 			}
-
-			//Console.WriteLine($"{ProcessName}: LoadLibraryA: [0x{load_library.ToString("X16")}]");
 
 			var allocated = Native.VirtualAllocEx(handle, IntPtr.Zero, CalculateDllSize(), NativeProcedures.AllocationType.MemoryCommit | NativeProcedures.AllocationType.MemoryReserve, NativeProcedures.AllocationProtect.PageReadWrite);
 			if(allocated == IntPtr.Zero)
@@ -73,14 +65,9 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			//Console.WriteLine($"{ProcessName}: Allocated: [0x{allocated.ToString("X16")}]");
-
 			var result = Native.WriteProcessMemoryIn(handle, allocated, Encoding.Default.GetBytes(DllPath), CalculateDllSize(), out var written);
-
 			if(result)
 			{
-				//Console.WriteLine($"{ProcessName}: Written bytes: {written}");
-
 				Native.CreateRemoteThreadIn(handle, IntPtr.Zero, 0, load_library, allocated, 0, IntPtr.Zero);
 			}
 

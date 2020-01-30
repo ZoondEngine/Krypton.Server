@@ -186,6 +186,7 @@
     <Compile Include="Core\Journaling\Types\OperatingSystemStamp.cs" />
     <Compile Include="Core\Journaling\Types\ProcessorStamp.cs" />
     <Compile Include="Core\Journaling\Types\VideoStamp.cs" />
+    <Compile Include="Core\Log\LogComponent.cs" />
     <Compile Include="Core\Network\BootstrapHelper.cs" />
     <Compile Include="Core\Network\Boots\Contracts\IServerNetworkModule.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnConnectionCommand.cs" />
@@ -194,6 +195,8 @@
     <Compile Include="Core\Network\Boots\NetworkCommands\OnSetKeyCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkHandlers\PacketsBootHandler.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
+    <Compile Include="Core\Updating\Commands\DeclineDownloadingCommand.cs" />
+    <Compile Include="Core\Updating\UpdatingComponent.cs" />
     <Compile Include="ServerBootstrap.cs" />
     <Compile Include="ServerEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -206,6 +209,10 @@
     <ProjectReference Include="..\..\JareemSys\Jareem.Network\Jareem.Network.csproj">
       <Project>{3f5d7ce9-1ab8-4e5a-b291-9186ef2d75b6}</Project>
       <Name>Jareem.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Krypton.Logging\Krypton.Logging.csproj">
+      <Project>{2831A7EE-2708-4D93-B1E4-21B6F3EBFEB9}</Project>
+      <Name>Krypton.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Krypton.Network\Krypton.Network.csproj">
       <Project>{DFBB8734-F58A-4AB7-BF03-BC9765485823}</Project>

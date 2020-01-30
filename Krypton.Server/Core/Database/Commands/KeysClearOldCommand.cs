@@ -25,8 +25,11 @@ namespace Krypton.Server.Core.Database.Commands
 
 		public bool Run(string line)
 		{
-			if(line.ToLower().Contains(".db keys clear old"))
+			var log = Log.LogComponent.Instance;
+
+			if (line.ToLower().Contains(".db keys clear old"))
 			{
+
 				var keys_context = DatabaseMgr.Instance.GetKeysContext();
 				var keys = keys_context.Keys;
 				List<Models.Key> removable_keys = new List<Models.Key>();
@@ -44,6 +47,7 @@ namespace Krypton.Server.Core.Database.Commands
 				keys_context.SaveChanges();
 
 				IO.IOMgr.Instance.GetPrint().Success($"Removed {count} old keys");
+				log.Warning($"Server has been delete old keys. Count: {count}");
 
 				return true;
 			}
@@ -75,6 +79,7 @@ namespace Krypton.Server.Core.Database.Commands
 					keys_context.SaveChanges();
 
 					IO.IOMgr.Instance.GetPrint().Success($"Removed all keys and key packets");
+					log.Error($"SERVER HAS BEEN DELETE ALL KEYS");
 
 					return true;
 				}

@@ -15,6 +15,8 @@ namespace Krypton.MinimalLoader
 			Console.Write("Security checking ... \t\t");
 			if (CheckSecurity(out string msg))
 			{
+				Console.Title = GenerateRandomWindowName();
+
 				ChangeColor(ConsoleColor.Green);
 				Console.WriteLine("OK");
 				Console.ResetColor();
@@ -134,11 +136,8 @@ namespace Krypton.MinimalLoader
 				Console.WriteLine($"Error message: {msg}");
 			}
 
-			ChangeColor(ConsoleColor.Red);
-			Console.WriteLine("Error message: Please solve your issues, restart loader and try again");
-
 			Console.ResetColor();
-			Console.WriteLine("Press any key to close");
+			Console.WriteLine("Press any key to continue ...");
 			Console.ReadKey();
 		}
 
@@ -148,6 +147,20 @@ namespace Krypton.MinimalLoader
 			{
 				//Ahuennaya Zaglushka 
 			}
+		}
+
+		private static string GenerateRandomWindowName(int length = 56)
+		{
+			string alphabet = "qwertyuiopasdfghjklzxcvbnm,.QWERTYUIOASDFGHJKLZXCVBNM1234567890";
+			string generated = "";
+
+			var rand = new Random();
+			for(var i = 0; i < length; i++)
+			{
+				generated += alphabet[rand.Next(0, alphabet.Length - 1)];
+			}
+
+			return generated;
 		}
 
 		private static bool CheckSecurity(out string message)

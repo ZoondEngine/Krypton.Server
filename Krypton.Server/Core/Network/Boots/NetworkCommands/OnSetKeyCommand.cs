@@ -44,30 +44,53 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 							{
 								if (db_key.RegionCode == packet.LocaleCode)
 								{
-									var between = DateTime.Now.Day - packet.ActivateDate.Day;
-									if (between < 1 && between == 0)
+									if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
 									{
-										if (db_key.Hardware == null | db_key.Hardware == "")
+										var between = DateTime.Now.Day - packet.ActivateDate.Day;
+										if (between <= 1 && between >= -1)
 										{
-											if (db_key.EndAt == null & db_key.ActivatedAt == null)
+											if (db_key.Hardware == null | db_key.Hardware == "")
 											{
-												db_key.ActivatedAt = packet.ActivateDate;
-												db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
+												if (db_key.EndAt == null & db_key.ActivatedAt == null)
+												{
+													db_key.ActivatedAt = packet.ActivateDate;
+													db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
+												}
+
+												db_key.Hardware = packet.Hardware;
+
+												result = true;
+												temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+												remaining = db_key.EndAt.Value;
+
+												keys_context.SaveChanges();
 											}
-
-											db_key.Hardware = packet.Hardware;
-
-											result = true;
-											temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
-											remaining = db_key.EndAt.Value;
-
-											keys_context.SaveChanges();
+											else
+											{
+												if(db_key.Hardware == packet.Hardware)
+												{
+													result = true;
+													temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+													remaining = db_key.EndAt.Value;
+												}
+												else
+												{
+													NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+													message = "Key or hardware identifier doesn't match";
+												}
+											}
+										}
+										else
+										{
+											NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+											
+											message = "Unknown time difficult exception";
+											temp_download = "nil";
 										}
 									}
 									else
 									{
-										message = "Unknown time difficult exception";
-										temp_download = "nil";
+										message = "Krypton updating now. Please try again later";
 									}
 								}
 								else
