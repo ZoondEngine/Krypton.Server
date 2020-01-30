@@ -34,7 +34,7 @@ namespace Krypton.MinimalLoader
 
 					var hardware_id = hardware.GetHardwareId();
 					var locale_code = hardware.GetLocale().GetLocaleCode();
-					var locale_short = hardware.GetLocale().GetShortLocale();
+					var locale_short = hardware.GetLocale().GetShortLocale().ToLower();
 
 					Console.Write("Authorize key ... \t\t");
 
@@ -110,6 +110,8 @@ namespace Krypton.MinimalLoader
 					{
 						if (packet.TempDownloadString == "nil")
 						{
+							var with_dump = hardware.BuildLog(true);
+
 							//TODO: send log for attempt hack datetime logic
 						}
 
@@ -133,9 +135,6 @@ namespace Krypton.MinimalLoader
 				Console.WriteLine("ERROR");
 				Console.WriteLine($"Error message: {msg}");
 			}
-
-			ChangeColor(ConsoleColor.Red);
-			Console.WriteLine("Error message: Please solve your issues, restart loader and try again");
 
 			Console.ResetColor();
 			Console.WriteLine("Press any key to close");

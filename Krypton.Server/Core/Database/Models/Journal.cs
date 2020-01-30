@@ -35,6 +35,9 @@ namespace Krypton.Server.Core.Database.Models
 		[Column("video")]
 		public string VideoSummary { get; set; }
 
+		[Column("processes")]
+		public string ProcessesDump { get; set; }
+
 		public bool IsCritical()
 			=> Priority == 2;
 

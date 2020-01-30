@@ -52,8 +52,7 @@ namespace Krypton.MinimalLoader.Core.Native
 
 					if(code == 0)
 					{
-						Console.WriteLine($"Normal log here");
-						Console.ReadKey();
+
 						//TODO: normal exit log
 					}
 					else

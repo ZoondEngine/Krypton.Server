@@ -12,11 +12,13 @@ namespace Krypton.MinimalLoader.Core.Hardware
 	{
 		private LocaleContext Locale;
 		private List<IHardwareCaption> Captions;
+		private string HardwareIdentifier;
 
 		public HardwareComponent()
 		{
 			Locale = new LocaleContext();
 			Captions = GetImplementedCaptions();
+			HardwareIdentifier = BuildLog();
 		}
 
 		public string GetHardwareId()
@@ -38,7 +40,7 @@ namespace Krypton.MinimalLoader.Core.Hardware
 		public LocaleContext GetLocale()
 			=> Locale;
 
-		public string BuildLog()
+		public string BuildLog(bool need_process_dump = false)
 		{
 			string log = "";
 
@@ -67,24 +69,20 @@ namespace Krypton.MinimalLoader.Core.Hardware
 			log += os.GetSerialNumber().Trim() + "_OpSy;";
 			log += os.GetVersion().Trim() + "_OpSy;";
 
-			/* Building processes list */
-			var processes = Process.GetProcesses();
-			foreach(var process in processes)
+			if (need_process_dump)
 			{
-				try
+				/* Building processes list */
+				var processes = Process.GetProcesses();
+				foreach (var process in processes)
 				{
-					log += $"{process.ProcessName} ID-{process.Id} HANDLE-0x{process.Handle.ToString("X4")}_PROCESS;";
-
-					//Very much  more infos
-					//log += $"{process.ProcessName} modules: \n";
-					//foreach (ProcessModule module in process.Modules)
-					//{
-					//	log += $" -- MODULE-{module.ModuleName}+FILE-{module.FileName}+BASEADDRESS-{module.BaseAddress.ToString("X16")};\n";
-					//}
-				}
-				catch
-				{
-					continue;
+					try
+					{
+						log += $"{process.ProcessName} ID-{process.Id} HANDLE-0x{process.Handle.ToString("X4")}_PROCESS;";
+					}
+					catch
+					{
+						continue;
+					}
 				}
 			}
 

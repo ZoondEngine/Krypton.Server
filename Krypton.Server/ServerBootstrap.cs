@@ -31,11 +31,11 @@ namespace Krypton.Server
             using (Analyze.Watch("Server initialization"))
             {
                 var components = Assembly
-                    .GetExecutingAssembly()
-                    .GetTypes()
-                    .Where(m => m.GetInterfaces().Contains(typeof(IKryptonComponent)))
-                    .Select(m => m.GetConstructor(Type.EmptyTypes).Invoke(null) as IKryptonComponent)
-                    .ToList();
+                       .GetExecutingAssembly()
+                       .GetTypes()
+                       .Where(m => m.GetInterfaces().Contains(typeof(IKryptonComponent)))
+                       .Select(m => m.GetConstructor(Type.EmptyTypes).Invoke(null) as IKryptonComponent)
+                       .ToList();
 
                 for (var i = 0; i < components.Count; i++)
                 {
