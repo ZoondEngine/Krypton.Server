@@ -17,7 +17,7 @@ namespace Krypton.Server.Core.Database.Models
 		[Column("name")]
 		public string Name { get; set; }
 		[Column("region")]
-		public int RegionCode { get; set; }
+		public string RegionCode { get; set; }
 		[Column("owner")]
 		public int OwnerId { get; set; }
 		[Column("blocked")]

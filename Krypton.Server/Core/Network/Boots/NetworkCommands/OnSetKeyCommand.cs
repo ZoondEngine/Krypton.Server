@@ -42,7 +42,7 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 						{
 							if (!db_key.IsBlocked() & !parent_packet.IsBlocked())
 							{
-								if (db_key.RegionCode == packet.LocaleCode)
+								if (db_key.RegionCode.ToLower() == packet.LocaleShort.ToLower())
 								{
 									if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
 									{
@@ -95,7 +95,68 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 								}
 								else
 								{
-									message = "Incorrect country for key or your contry market not supported";
+									if(db_key.RegionCode.ToLower() == "ru")
+									{
+										if(packet.LocaleShort.ToLower() == "be" || packet.LocaleShort.ToLower() == "uk")
+										{
+											if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
+											{
+												var between = DateTime.Now.Day - packet.ActivateDate.Day;
+												if (between <= 1 && between >= -1)
+												{
+													if (db_key.Hardware == null | db_key.Hardware == "")
+													{
+														if (db_key.EndAt == null & db_key.ActivatedAt == null)
+														{
+															db_key.ActivatedAt = packet.ActivateDate;
+															db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
+														}
+
+														db_key.Hardware = packet.Hardware;
+
+														result = true;
+														temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+														remaining = db_key.EndAt.Value;
+
+														keys_context.SaveChanges();
+													}
+													else
+													{
+														if (db_key.Hardware == packet.Hardware)
+														{
+															result = true;
+															temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+															remaining = db_key.EndAt.Value;
+														}
+														else
+														{
+															NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+															message = "Key or hardware identifier doesn't match";
+														}
+													}
+												}
+												else
+												{
+													NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+
+													message = "Unknown time difficult exception";
+													temp_download = "nil";
+												}
+											}
+											else
+											{
+												message = "Krypton updating now. Please try again later";
+											}
+										}
+										else
+										{
+											message = "Incorrect country for key or your contry market not supported";
+										}
+									}
+									else
+									{
+										message = "Incorrect country for key or your contry market not supported";
+									}
 								}
 							}
 							else

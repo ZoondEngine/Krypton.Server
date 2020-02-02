@@ -9,7 +9,7 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 			var services = ServiceController.GetServices();
 			for(int i = 0; i < services.Length; i++)
 			{
-				if(services[i].ServiceName.ToLower().Contains("beservice"))
+				if(services[i].ServiceName.ToLower() == "beservice")
 				{
 					if (services[i].Status == ServiceControllerStatus.Running)
 					{

@@ -107,6 +107,7 @@
     <Compile Include="Core\Native\InjectionComponent.cs" />
     <Compile Include="Core\Native\NativeProcedures.cs" />
     <Compile Include="Core\Native\ProcessStarterComponent.cs" />
+    <Compile Include="Core\Native\RedistributablePackage.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
     <Compile Include="Core\Network\SubscribersBootstrap.cs" />
     <Compile Include="Core\Network\Subscribers\OnConnectHandler.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Core\Security\Checks\Contracts\ISecurityCheck.cs" />
     <Compile Include="Core\Security\Checks\DebuggerCheck.cs" />
     <Compile Include="Core\Security\Checks\EasyAntiCheatCheck.cs" />
+    <Compile Include="Core\Security\Checks\RedistributableCheck.cs" />
     <Compile Include="Core\Security\Checks\SteamCheck.cs" />
     <Compile Include="Core\Security\SecurityComponent.cs" />
     <Compile Include="Program.cs" />
