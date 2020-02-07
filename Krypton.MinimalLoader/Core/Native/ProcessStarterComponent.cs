@@ -126,6 +126,8 @@ namespace Krypton.MinimalLoader.Core.Native
 			}
 
 			info.FileName = GetProcessName();
+			info.UseShellExecute = true;
+			info.Verb = "runas";
 		}
 	}
 }
