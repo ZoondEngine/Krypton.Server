@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Principal;
 using System.Threading;
 
 namespace Krypton.MinimalLoader.Core.Native
@@ -19,7 +20,17 @@ namespace Krypton.MinimalLoader.Core.Native
 			m_process_name = process_name;
 
 			ProcessStartInfo psi = new ProcessStartInfo();
-			Prepare(ref psi);
+			if (IsHiddenMode())
+			{
+				psi.WindowStyle = ProcessWindowStyle.Hidden;
+				psi.ErrorDialog = false;
+				psi.CreateNoWindow = false;
+			}
+
+			psi.FileName = GetProcessName();
+			psi.UseShellExecute = true;
+			psi.Verb = "runas";
+			psi.LoadUserProfile = true;
 
 			m_is_runned = true;
 			m_process = Process.Start(psi);
@@ -48,12 +59,12 @@ namespace Krypton.MinimalLoader.Core.Native
 					}
 
 					watcher.Stop();
-					if(watcher.Elapsed.Seconds < 3)
+					if (watcher.Elapsed.Seconds < 3)
 					{
 						code = -1;
 					}
 
-					if(code == 0)
+					if (code == 0)
 					{
 						Console.WriteLine("Done. Close loader and start the game");
 						Console.ReadKey();

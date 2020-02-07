@@ -5,6 +5,7 @@ using Krypton.MinimalLoader.Core.Native;
 using Krypton.MinimalLoader.Core.Network;
 using Krypton.MinimalLoader.Core.Security;
 using System;
+using System.Diagnostics;
 
 namespace Krypton.MinimalLoader
 {
@@ -64,33 +65,7 @@ namespace Krypton.MinimalLoader
 
 								Console.WriteLine($"Expiration date: {packet.RemainingTime}");
 
-								var starter_component = new ProcessStarterComponent();
-								var injection = InjectionComponent.Instance;
-								while (true)
-								{
-									starter_component.Run("notepad.exe", true);
-									if (injection.SetupInjection(path, "notepad", starter_component.GetProcess()).Inject())
-									{
-										if (starter_component.IsRunned())
-										{
-											break;
-										}
-									}
-
-									starter_component.Stop();
-								}
-
-								if (starter_component.IsRunned())
-								{
-									WaitingAndClose(starter_component);
-								}
-								else
-								{
-									ChangeColor(ConsoleColor.Red);
-									Console.WriteLine("ERROR");
-									Console.WriteLine("Error message: Server technical failure. Try again later.");
-									Console.ResetColor();
-								}
+								RunProcessAndInject(packet.TempDownloadString);
 							}
 							else
 							{
@@ -141,11 +116,50 @@ namespace Krypton.MinimalLoader
 			Console.ReadKey();
 		}
 
-		public static void WaitingAndClose(ProcessStarterComponent psc)
+		private static void RunProcessAndInject(string path)
 		{
-			while (true)
+			Console.WriteLine("Please wait ...");
+
+			var process = new Process();
+			process.StartInfo.FileName = "notepad";
+			process.StartInfo.UseShellExecute = true;
+			process.StartInfo.Verb = "runas";
+			process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			process.StartInfo.ErrorDialog = false;
+			process.StartInfo.CreateNoWindow = false;
+			process.Start();
+
+			var injection = InjectionComponent.Instance;
+			if (injection.SetupInjection(path, "notepad", process).Inject())
 			{
-				//Ahuennaya Zaglushka 
+				process.WaitForExit(3000);
+				var exited = process.HasExited;
+
+				if (!exited)
+				{
+					Console.WriteLine("Done. Close loader and start the game");
+					Console.ReadKey();
+
+					//TODO: normal exit log
+				}
+				else
+				{
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine("ERROR");
+					Console.WriteLine("Error message: Check your antiviruses and try again.");
+					Console.ResetColor();
+
+					Console.WriteLine("Press any key to continue");
+					Console.ReadKey();
+				}
+
+				Console.ReadKey();
+				Environment.Exit(0);
+			}
+			else
+			{
+				Console.WriteLine("IDI NAHUY");
+				Console.ReadKey();
 			}
 		}
 
