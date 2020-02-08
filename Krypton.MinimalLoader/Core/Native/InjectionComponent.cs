@@ -40,14 +40,14 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			Console.WriteLine("Injection dllpath: " + DllPath);
+			//Console.WriteLine("Injection dllpath: " + DllPath);
 
 			IntPtr handle;
 			if (NotepadProcess != null)
 			{
 				handle = NotepadProcess.Handle;
 
-				Console.WriteLine("Process Handle: 0x" + handle.ToString("X16"));
+				//Console.WriteLine("Process Handle: 0x" + handle.ToString("X16"));
 			}
 			else
 			{
@@ -70,7 +70,7 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			Console.WriteLine("LoadLibraryA handle: 0x" + load_library.ToString("X16"));
+			//Console.WriteLine("LoadLibraryA handle: 0x" + load_library.ToString("X16"));
 
 			var allocated = Native.VirtualAllocEx(handle, IntPtr.Zero, CalculateDllSize(), NativeProcedures.AllocationType.MemoryCommit, NativeProcedures.AllocationProtect.PageReadWrite);
 			if (allocated == IntPtr.Zero)
@@ -78,17 +78,17 @@ namespace Krypton.MinimalLoader.Core.Native
 				return false;
 			}
 
-			Console.WriteLine("Allocated: 0x" + allocated.ToString("X16"));
-			Console.WriteLine("DllSize: 0x" + CalculateDllSize().ToString("X16"));
+			//Console.WriteLine("Allocated: 0x" + allocated.ToString("X16"));
+			//Console.WriteLine("DllSize: 0x" + CalculateDllSize().ToString("X16"));
 
 			var result = Native.WriteProcessMemoryIn(handle, allocated, Encoding.Default.GetBytes(DllPath), CalculateDllSize(), out var written);
-			Console.WriteLine("written: 0x" + written.ToString());
+			//Console.WriteLine("written: 0x" + written.ToString());
 
 			if (result)
 			{
 				var thread = Native.CreateRemoteThreadIn(handle, IntPtr.Zero, 0, load_library, allocated, 0, IntPtr.Zero);
 				var wait_result = Native.WaitForSingleObjectIn(thread, 10 * 60 * 1000);
-				Console.WriteLine("thread: 0x" + thread.ToString("X16"));
+				//Console.WriteLine("thread: 0x" + thread.ToString("X16"));
 
 				//var wait_result = Native.WaitForSingleObjectIn(thread, 10 * 60 * 1000);
 				if (wait_result == 0x00000080L || wait_result == 0x00000102L || wait_result == 0xFFFFFFFF)
@@ -100,7 +100,7 @@ namespace Krypton.MinimalLoader.Core.Native
 
 					result = false;
 
-					throw new System.ComponentModel.Win32Exception("Error: 0x" + Native.GetLastErrorIn().ToString("X8"));
+					//throw new System.ComponentModel.Win32Exception("Error: 0x" + Native.GetLastErrorIn().ToString("X8"));
 				}
 
 				if (thread != null)

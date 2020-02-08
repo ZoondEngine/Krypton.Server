@@ -21,9 +21,40 @@ namespace Krypton.MinimalLoader.Core.Hardware
 
 		public string GetHardwareId()
 		{
-			return GetCaption<NetworkCaption>().GetMacAddress().Trim()
-				+ "__" + GetCaption<DiskDriveCaption>().GetSerialNumber().Trim() 
-				+ "__" + GetCaption<ProcessorCaption>().GetProcessorId().Trim();
+			string result = "";
+
+			var network = GetCaption<NetworkCaption>();
+			var dd = GetCaption<DiskDriveCaption>();
+			var proc = GetCaption<ProcessorCaption>();
+
+			if (network != null)
+			{
+				var mac = network.GetMacAddress();
+				if (mac != null)
+				{
+					result += mac.Trim() + "__";
+				}
+			}
+
+			if (dd != null)
+			{
+				var serial = dd.GetSerialNumber();
+				if (serial != null)
+				{
+					result += serial.Trim() + "__";
+				}
+			}
+
+			if (proc != null)
+			{
+				var id = proc.GetProcessorId();
+				if (id != null)
+				{
+					result += id.Trim() + "__";
+				}
+			}
+
+			return result;
 		}
 
 		public T GetCaption<T>() where T : BaseCaption

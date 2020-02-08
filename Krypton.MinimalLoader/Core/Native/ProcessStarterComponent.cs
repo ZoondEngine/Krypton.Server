@@ -55,7 +55,9 @@ namespace Krypton.MinimalLoader.Core.Native
 
 					if(code == 0)
 					{
+						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("Done. Close loader and start the game");
+						Console.ResetColor();
 						Console.ReadKey();
 
 						//TODO: normal exit log
@@ -64,7 +66,7 @@ namespace Krypton.MinimalLoader.Core.Native
 					{
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("ERROR");
-						Console.WriteLine("Error message: Check your antiviruses and try again.");
+						Console.WriteLine("Error message: Unknown error.");
 						Console.ResetColor();
 
 						Console.WriteLine("Press any key to continue");
@@ -123,6 +125,8 @@ namespace Krypton.MinimalLoader.Core.Native
 				info.WindowStyle = ProcessWindowStyle.Hidden;
 				info.ErrorDialog = false;
 				info.CreateNoWindow = false;
+				info.UseShellExecute = true;
+				info.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.System);
 			}
 
 			info.FileName = GetProcessName();

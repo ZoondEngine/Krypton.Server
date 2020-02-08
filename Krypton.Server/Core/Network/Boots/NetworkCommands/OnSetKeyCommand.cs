@@ -113,6 +113,10 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 						message = "Key not found";
 					}
 				}
+				else
+				{
+					message = "Invalid packet";
+				}
 			}
 
 			if (rec.Connection.IsConnected)
@@ -130,7 +134,8 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 			}
 			else
 			{
-				throw new IOException("Transport protocol has been closed while server calculating key data");
+				//throw new IOException("Transport protocol has been closed while server calculating key data");
+				IO.IOMgr.Instance.GetPrint().Error("Transport protocol has been closed while server calculating key data");
 			}
 		}
 	}
