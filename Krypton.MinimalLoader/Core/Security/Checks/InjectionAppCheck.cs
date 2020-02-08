@@ -20,9 +20,10 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 
 			try
 			{
-				if (Directory.Exists("temporary"))
+				var directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\temporary";
+				if (Directory.Exists(directory))
 				{
-					Directory.Delete("temporary", true);
+					Directory.Delete(directory, true);
 				}
 			}
 			catch

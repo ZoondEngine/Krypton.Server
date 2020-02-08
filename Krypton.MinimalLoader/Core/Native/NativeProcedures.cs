@@ -4,11 +4,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Runtime.ConstrainedExecution;
+using System.Security;
 
 namespace Krypton.MinimalLoader.Core.Native
 {
 	public class NativeProcedures
 	{
+		// If you are using this with [GetStartupInfo], this definition works without errors.
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		public struct STARTUPINFO
+		{
+			public Int32 cb;
+			public IntPtr lpReserved;
+			public IntPtr lpDesktop;
+			public IntPtr lpTitle;
+			public Int32 dwX;
+			public Int32 dwY;
+			public Int32 dwXSize;
+			public Int32 dwYSize;
+			public Int32 dwXCountChars;
+			public Int32 dwYCountChars;
+			public Int32 dwFillAttribute;
+			public Int32 dwFlags;
+			public Int16 wShowWindow;
+			public Int16 cbReserved2;
+			public IntPtr lpReserved2;
+			public IntPtr hStdInput;
+			public IntPtr hStdOutput;
+			public IntPtr hStdError;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct SECURITY_ATTRIBUTES
+		{
+			public int nLength;
+			public IntPtr lpSecurityDescriptor;
+			public int bInheritHandle;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct PROCESS_INFORMATION
+		{
+			public IntPtr hProcess;
+			public IntPtr hThread;
+			public int dwProcessId;
+			public int dwThreadId;
+		}
+
 		#region Import Enums
 		public enum ProcessPrivileges : int
 		{
@@ -50,42 +93,51 @@ namespace Krypton.MinimalLoader.Core.Native
 
 		[DllImport("kernel32.dll")]
 		private static extern IntPtr CreateRemoteThread(IntPtr process_handle, IntPtr thread_attributes, uint stack_size, IntPtr start_address, IntPtr parameters, uint creation_flags, IntPtr thread_id);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		private static extern uint WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool CloseHandle(IntPtr hObject);
+
+		[DllImport("kernel32.dll")]
+		static extern uint GetLastError();
 		#endregion
 
 		#region Methods
 		public IntPtr OpenProcess(ProcessPrivileges privileges, int process_id, bool inherited_handle = false)
-		{
-			return OpenProcess((int)privileges, inherited_handle, process_id);
-		}
+			=> OpenProcess((int)privileges, inherited_handle, process_id);
 
 		public IntPtr GetModuleHandleIn(string module)
-		{
-			return GetModuleHandle(module);
-		}
+			=> GetModuleHandle(module);
 
 		public IntPtr GetProcAddressIn(IntPtr module, string procedure_name)
-		{
-			return GetProcAddress(module, procedure_name);
-		}
+			=> GetProcAddress(module, procedure_name);
+
 		public IntPtr GetProcAddressIn(string module, string procedure_name)
-		{
-			return GetProcAddress(GetModuleHandle(module), procedure_name);
-		}
+			=> GetProcAddress(GetModuleHandle(module), procedure_name);
 
 		public IntPtr VirtualAllocEx(IntPtr process_handle, IntPtr address, uint size, AllocationType type, AllocationProtect protect)
-		{
-			return VirtualAllocEx(process_handle, address, size, (uint)type, (uint)protect);
-		}
+			=> VirtualAllocEx(process_handle, address, size, (uint)type, (uint)protect);
 
 		public bool WriteProcessMemoryIn(IntPtr process_handle, IntPtr destination, byte[] buffer, uint size, out UIntPtr written_bytes)
-		{
-			return WriteProcessMemory(process_handle, destination, buffer, size, out written_bytes);
-		}
+			=> WriteProcessMemory(process_handle, destination, buffer, size, out written_bytes);
 
 		public IntPtr CreateRemoteThreadIn(IntPtr process_handle, IntPtr attributes, uint stack_size, IntPtr start_address, IntPtr parameters, uint creation_flags, IntPtr thread_id)
-		{
-			return CreateRemoteThread(process_handle, attributes, stack_size, start_address, parameters, creation_flags, thread_id);
-		}
+			=> CreateRemoteThread(process_handle, attributes, stack_size, start_address, parameters, creation_flags, thread_id);
+
+		public uint WaitForSingleObjectIn(IntPtr handle, uint milliseconds)
+			=> WaitForSingleObject(handle, milliseconds);
+
+		public bool CloseHandleIn(IntPtr handle)
+			=> CloseHandle(handle);
+
+		public uint GetLastErrorIn()
+			=> GetLastError();
+
 		#endregion
 	}
 }

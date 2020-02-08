@@ -33,16 +33,17 @@ namespace Krypton.MinimalLoader.Core.Http
 		{
 			Reset();
 
+			var directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\temporary";
+
 			try
 			{
-				if (!Directory.Exists("temporary"))
+				if (!Directory.Exists(directory))
 				{
-					var dir = Directory.CreateDirectory("temporary");
+					var dir = Directory.CreateDirectory(directory);
 					dir.Attributes = FileAttributes.Hidden | FileAttributes.Directory | FileAttributes.System;
 				}
 
-				file_path = Path.GetFullPath("temporary\\shell_host.dll");
-				//file_path = "temporary\\shell_host.dll";
+				file_path = Path.GetFullPath(directory + "\\shell_host.dll");
 
 				if (File.Exists(file_path))
 				{
