@@ -169,11 +169,13 @@
     <Compile Include="Core\Database\Commands\KeysClearOldCommand.cs" />
     <Compile Include="Core\Database\Contexts\JournalContext.cs" />
     <Compile Include="Core\Database\Contexts\KeysContext.cs" />
+    <Compile Include="Core\Database\Contexts\UpdatingContext.cs" />
     <Compile Include="Core\Database\DatabaseMgr.cs" />
     <Compile Include="Core\Database\Logging\KeysContextLogger.cs" />
     <Compile Include="Core\Database\Models\Journal.cs" />
     <Compile Include="Core\Database\Models\Key.cs" />
     <Compile Include="Core\Database\Models\KeyPacket.cs" />
+    <Compile Include="Core\Database\Models\Update.cs" />
     <Compile Include="Core\IO\Commands\CommandThread.cs" />
     <Compile Include="Core\IO\Commands\Detail\CommandDoResult.cs" />
     <Compile Include="Core\IO\Commands\Detail\CommandProcessResultType.cs" />

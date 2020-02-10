@@ -17,8 +17,9 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 
 		public void OnError(Exception error)
 		{
-			var print = IO.IOMgr.Instance.GetPrint();
-			print.Error($"Internal error catched while process SetKeyCommand( ... ): \n{error.ToString()}");
+			//var print = IO.IOMgr.Instance.GetPrint();
+			//print.Error($"Internal error catched while process SetKeyCommand( ... ): \n{error.ToString()}");
+			Console.WriteLine($"Internal error catched while process SetKeyCommand( ... ): \n{error.ToString()}");
 		}
 
 		public void OnNext(BaseData value)
@@ -42,7 +43,7 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 						{
 							if (!db_key.IsBlocked() & !parent_packet.IsBlocked())
 							{
-								if (db_key.RegionCode == packet.LocaleCode)
+								if (db_key.RegionCode.ToLower() == packet.LocaleShort.ToLower() || db_key.Enabled == 0)
 								{
 									if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
 									{
@@ -67,7 +68,7 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 											}
 											else
 											{
-												if(db_key.Hardware == packet.Hardware)
+												if (db_key.Hardware == packet.Hardware)
 												{
 													result = true;
 													temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
@@ -83,7 +84,7 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 										else
 										{
 											NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
-											
+
 											message = "Unknown time difficult exception";
 											temp_download = "nil";
 										}
@@ -95,7 +96,68 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 								}
 								else
 								{
-									message = "Incorrect country for key or your contry market not supported";
+									if (db_key.RegionCode.ToLower() == "ru")
+									{
+										if (packet.LocaleShort.ToLower() == "be" || packet.LocaleShort.ToLower() == "uk")
+										{
+											if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
+											{
+												var between = DateTime.Now.Day - packet.ActivateDate.Day;
+												if (between <= 1 && between >= -1)
+												{
+													if (db_key.Hardware == null | db_key.Hardware == "")
+													{
+														if (db_key.EndAt == null & db_key.ActivatedAt == null)
+														{
+															db_key.ActivatedAt = packet.ActivateDate;
+															db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
+														}
+
+														db_key.Hardware = packet.Hardware;
+
+														result = true;
+														temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+														remaining = db_key.EndAt.Value;
+
+														keys_context.SaveChanges();
+													}
+													else
+													{
+														if (db_key.Hardware == packet.Hardware)
+														{
+															result = true;
+															temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+															remaining = db_key.EndAt.Value;
+														}
+														else
+														{
+															NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+															message = "Key or hardware identifier doesn't match";
+														}
+													}
+												}
+												else
+												{
+													NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+
+													message = "Unknown time difficult exception";
+													temp_download = "nil";
+												}
+											}
+											else
+											{
+												message = "Krypton updating now. Please try again later";
+											}
+										}
+										else
+										{
+											message = "Incorrect country for key or your contry market not supported";
+										}
+									}
+									else
+									{
+										message = "Incorrect country for key or your contry market not supported";
+									}
 								}
 							}
 							else
@@ -112,10 +174,6 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 					{
 						message = "Key not found";
 					}
-				}
-				else
-				{
-					message = "Invalid packet";
 				}
 			}
 
@@ -134,9 +192,136 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 			}
 			else
 			{
-				//throw new IOException("Transport protocol has been closed while server calculating key data");
-				IO.IOMgr.Instance.GetPrint().Error("Transport protocol has been closed while server calculating key data");
+				throw new IOException("Transport protocol has been closed while server calculating key data");
 			}
 		}
+
+		//public void OnNext(BaseData value)
+		//{
+		//	string message = "";
+		//	string temp_download = "null";
+		//	bool result = false;
+		//	DateTime remaining = DateTime.MinValue;
+		//	var rec = value.As<TcpNetworkData>();
+		//	if (rec.PacketContent.Identifier == (int)Packets.GetKeyAuth)
+		//	{
+		//		Console.WriteLine("Key Auth");
+		//		var packet = rec.PacketContent.Convert<GetKeyAuth>();
+		//		if (packet.IsValid())
+		//		{
+		//			Console.WriteLine("Packet Valid");
+		//			var keys_context = Database.DatabaseMgr.Instance.GetKeysContext();
+		//			var db_key = keys_context.Keys.FirstOrDefault((x) => x.Value.ToLower() == packet.Key.ToLower());
+		//			if (db_key != null)
+		//			{
+		//				Console.WriteLine("Key not null");
+		//				var parent_packet = keys_context.KeyPackets.FirstOrDefault((x) => x.Identifier == db_key.PacketId);
+		//				if (parent_packet != null)
+		//				{
+		//					Console.WriteLine("Parent packet not null");
+		//					if (!db_key.IsBlocked() & !parent_packet.IsBlocked())
+		//					{
+		//						Console.WriteLine("Not blocked");
+		//						if (db_key.RegionCode == packet.LocaleCode || db_key.Enabled == 0)
+		//						{
+		//							Console.WriteLine("Locale good");
+		//							if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
+		//							{
+		//								var between = DateTime.Now.Day - packet.ActivateDate.Day;
+		//								if (between <= 1 && between >= -1)
+		//								{
+		//									Console.WriteLine("Not between");
+		//									if (db_key.Hardware == null | db_key.Hardware == "")
+		//									{
+		//										Console.WriteLine("HWID null");
+		//										if (db_key.EndAt == null & db_key.ActivatedAt == null)
+		//										{
+		//											Console.WriteLine("Activating ...");
+		//											db_key.ActivatedAt = packet.ActivateDate;
+		//											db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
+		//										}
+
+		//										db_key.Hardware = packet.Hardware;
+
+		//										result = true;
+		//										temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+		//										remaining = db_key.EndAt.Value;
+
+		//										keys_context.SaveChanges();
+		//									}
+		//									else
+		//									{
+		//										Console.WriteLine("Hardware not null");
+		//										if (db_key.Hardware == packet.Hardware)
+		//										{
+		//											result = true;
+		//											temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+		//											remaining = db_key.EndAt.Value;
+		//										}
+		//										else
+		//										{
+		//											NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+		//											message = "Key or hardware identifier doesn't match";
+		//										}
+		//									}
+		//								}
+		//								else
+		//								{
+		//									NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+
+		//									message = "Unknown time difficult exception";
+		//									temp_download = "nil";
+		//								}
+		//							}
+		//							else
+		//							{
+		//								message = "Krypton updating now. Please try again later";
+		//							}
+		//						}
+		//						else
+		//						{
+		//							message = "Incorrect country for key or your contry market not supported";
+		//						}
+		//					}
+		//					else
+		//					{
+		//						message = "Key is locked";
+		//					}
+		//				}
+		//				else
+		//				{
+		//					message = "License identifier not found";
+		//				}
+		//			}
+		//			else
+		//			{
+		//				message = "Key not found";
+		//			}
+		//		}
+		//		else
+		//		{
+		//			message = "Invalid packet";
+		//		}
+		//	}
+
+		//	if (rec.Connection.IsConnected)
+		//	{
+
+		//		NetworkComponent.Instance.GetService().Send(
+		//			new SetKeyAuth()
+		//			{
+		//				Result = result,
+		//				RemainingTime = remaining,
+		//				TempDownloadString = temp_download,
+		//				Message = message
+		//			},
+		//			rec.Connection);
+		//	}
+		//	else
+		//	{
+		//		//throw new IOException("Transport protocol has been closed while server calculating key data");
+		//		//IO.IOMgr.Instance.GetPrint().Error("Transport protocol has been closed while server calculating key data");
+		//	}
+		//}
 	}
 }

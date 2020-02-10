@@ -18,7 +18,7 @@ namespace Krypton.Server.Core.Database.Models
 		public int Days { get; set; }
 
 		[Column("region")]
-		public int RegionCode { get; set; }
+		public string RegionCode { get; set; }
 
 		[Column("packId")]
 		public int PacketId { get; set; }

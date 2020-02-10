@@ -70,6 +70,7 @@ namespace Krypton.MinimalLoader
 								{
 									starter_component.Run("notepad.exe", true);
 									if (injection.SetupInjection(path, "notepad", starter_component.GetProcess()).Inject())
+									//if(injection.SetupInjection(path, "explorer").Inject())
 									{
 										if (starter_component.IsRunned())
 										{
@@ -80,6 +81,11 @@ namespace Krypton.MinimalLoader
 									starter_component.Stop();
 								}
 
+								//if(injection.SetupInjection(path, "sihost").Inject())
+								//{
+								//	Console.WriteLine("Done");
+								//	Console.ReadKey();
+								//}
 								if (starter_component.IsRunned())
 								{
 									WaitingAndClose(starter_component);
