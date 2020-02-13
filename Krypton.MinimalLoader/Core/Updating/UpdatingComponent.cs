@@ -17,7 +17,7 @@ namespace Krypton.MinimalLoader.Core.Updating
 		public UpdatingComponent()
 		{
 			NetworkInstance = NetworkComponent.Instance;
-			CurrentVersion = new Version("1.0.483.5");
+			CurrentVersion = new Version("1.0.483.6");
 		}
 
 		public bool IsNeededUpdating()
