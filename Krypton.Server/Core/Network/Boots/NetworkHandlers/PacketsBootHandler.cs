@@ -14,6 +14,7 @@ namespace Krypton.Server.Core.Network.Boots.NetworkHandlers
 			(service) => service.Subscribe<TcpConnectionProvider, BaseData>(new OnConnectionCommand()),
 			(service) => service.Subscribe<TcpReceivingProvider, BaseData>(new OnSetGuidCommand()),
 			(service) => service.Subscribe<TcpReceivingProvider, BaseData>(new OnSetKeyCommand()),
+			(service) => service.Subscribe<TcpReceivingProvider, BaseData>(new OnSetUpdateCommand()),
 		};
 
 		private int AddSubscribers(NetworkComponent network)

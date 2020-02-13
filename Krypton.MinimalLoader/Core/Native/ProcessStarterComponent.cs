@@ -64,10 +64,15 @@ namespace Krypton.MinimalLoader.Core.Native
 					}
 					else
 					{
-						Console.ForegroundColor = ConsoleColor.Red;
-						Console.WriteLine("ERROR");
-						Console.WriteLine("Error message: Unknown error.");
+						//Console.ForegroundColor = ConsoleColor.Red;
+						//Console.WriteLine("ERROR");
+						//Console.WriteLine("Error message: Unknown error.");
+						//Console.ResetColor();
+
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.WriteLine("Done. Close loader and start the game");
 						Console.ResetColor();
+						Console.ReadKey();
 
 						Console.WriteLine("Press any key to continue");
 						Console.ReadKey();

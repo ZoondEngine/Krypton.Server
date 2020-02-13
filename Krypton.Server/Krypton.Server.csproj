@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>krypton_transparent.ico</ApplicationIcon>
@@ -41,7 +43,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -52,7 +54,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -167,6 +169,7 @@
     <Compile Include="Core\Database\Commands\KeyInfoCommand.cs" />
     <Compile Include="Core\Database\Commands\KeyPacketsInfoCommand.cs" />
     <Compile Include="Core\Database\Commands\KeysClearOldCommand.cs" />
+    <Compile Include="Core\Database\Configuration\DatabaseConfiguration.cs" />
     <Compile Include="Core\Database\Contexts\JournalContext.cs" />
     <Compile Include="Core\Database\Contexts\KeysContext.cs" />
     <Compile Include="Core\Database\Contexts\UpdatingContext.cs" />
@@ -176,6 +179,12 @@
     <Compile Include="Core\Database\Models\Key.cs" />
     <Compile Include="Core\Database\Models\KeyPacket.cs" />
     <Compile Include="Core\Database\Models\Update.cs" />
+    <Compile Include="Core\GlobalSettings.cs" />
+    <Compile Include="Core\Ini\Contracts\IModuleConfiguration.cs" />
+    <Compile Include="Core\Ini\Details\IniFile.cs" />
+    <Compile Include="Core\Ini\Details\IniSection.cs" />
+    <Compile Include="Core\Ini\Details\IniValue.cs" />
+    <Compile Include="Core\Ini\IniComponent.cs" />
     <Compile Include="Core\IO\Commands\CommandThread.cs" />
     <Compile Include="Core\IO\Commands\Detail\CommandDoResult.cs" />
     <Compile Include="Core\IO\Commands\Detail\CommandProcessResultType.cs" />
@@ -189,15 +198,21 @@
     <Compile Include="Core\Journaling\Types\ProcessorStamp.cs" />
     <Compile Include="Core\Journaling\Types\VideoStamp.cs" />
     <Compile Include="Core\Log\LogComponent.cs" />
+    <Compile Include="Core\MMF\Details\MappedFile.cs" />
+    <Compile Include="Core\MMF\MMFComponent.cs" />
+    <Compile Include="Core\NetworkWatson\WatsonNetworkComponent.cs" />
     <Compile Include="Core\Network\BootstrapHelper.cs" />
     <Compile Include="Core\Network\Boots\Contracts\IServerNetworkModule.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnConnectionCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnSetGuidCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnSetJournalCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkCommands\OnSetKeyCommand.cs" />
+    <Compile Include="Core\Network\Boots\NetworkCommands\OnSetUpdateCommand.cs" />
     <Compile Include="Core\Network\Boots\NetworkHandlers\PacketsBootHandler.cs" />
+    <Compile Include="Core\Network\Configuration\NetworkConfiguration.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
     <Compile Include="Core\Updating\Commands\DeclineDownloadingCommand.cs" />
+    <Compile Include="Core\Updating\Configuration\UpdatingConfiguration.cs" />
     <Compile Include="Core\Updating\UpdatingComponent.cs" />
     <Compile Include="ServerBootstrap.cs" />
     <Compile Include="ServerEntry.cs" />

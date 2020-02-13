@@ -11,7 +11,13 @@ namespace Krypton.Server.Core.Database.Contexts
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 		{
-			options.UseMySql("server=localhost;UserId=root;Password=12589635Ff;database=evilcorp;");
+			var cfg = DatabaseMgr.Instance.GetConfig();
+			var host = cfg.Read<string>("host");
+			var user = cfg.Read<string>("user");
+			var password = cfg.Read<string>("password");
+			var db = cfg.Read<string>("database");
+
+			options.UseMySql($"server={host};UserId={user};Password={password};database={db};");
 		}
 
 		protected override void OnModelCreating(ModelBuilder builder)

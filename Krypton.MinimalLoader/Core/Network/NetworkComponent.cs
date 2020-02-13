@@ -20,6 +20,7 @@ namespace Krypton.MinimalLoader.Core.Network
 		public NetworkComponent()
 		{
 			Service = ClientFactory.CreateTcpClient("194.87.109.35", 8789);
+			//Service = ClientFactory.CreateTcpClient("127.0.0.1", 8789);
 
 			SubsBootstrap = new SubscribersBootstrap();
 			SubsBootstrap.MountUp(this);
@@ -45,8 +46,8 @@ namespace Krypton.MinimalLoader.Core.Network
 		public TcpConnection GetConnection()
 			=> Service.GetConnection();
 
-		public async Task<TcpNetworkData> SendAndWait(BaseNetworkable structure)
-			=> await Service.SendAndWait(structure);
+		public TcpNetworkData SendAndWait(BaseNetworkable structure)
+			=> Service.SendAndWait(structure);
 		public void Send(BaseNetworkable structure)
 			=> Service.Send(structure);
 

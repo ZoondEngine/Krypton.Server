@@ -1,22 +1,33 @@
-﻿using Jareem.Network.Packets.KeyAuth;
+﻿using Jareem.Network.Packets;
+using Jareem.Network.Packets.KeyAuth;
+using Jareem.Network.Systems.Tcp.Observeable.Providers.TcpReceiving;
 using Krypton.MinimalLoader.Core.Hardware;
 using Krypton.MinimalLoader.Core.Http;
 using Krypton.MinimalLoader.Core.Native;
 using Krypton.MinimalLoader.Core.Network;
 using Krypton.MinimalLoader.Core.Security;
+using Krypton.MinimalLoader.Core.Updating;
 using System;
+using System.Threading;
 
 namespace Krypton.MinimalLoader
 {
 	class Program
 	{
+		public static bool NextStage = false;
+		public static TcpNetworkData Data = null;
+
+		//public static string Result = "";
+		//public static string Message = "";
+		//public static string Expired = "";
+
 		static void Main(string[] args)
 		{
+			Console.Title = GenerateRandomWindowName();
+
 			Console.Write("Security checking ... \t\t");
 			if (CheckSecurity(out string msg))
 			{
-				Console.Title = GenerateRandomWindowName();
-
 				ChangeColor(ConsoleColor.Green);
 				Console.WriteLine("OK");
 				Console.ResetColor();
@@ -31,6 +42,24 @@ namespace Krypton.MinimalLoader
 
 					var hardware = HardwareComponent.Instance;
 
+					Console.Write("Checking updates ... \t\t");
+					if (UpdatingComponent.Instance.IsNeededUpdating())
+					{
+						ChangeColor(ConsoleColor.Yellow);
+						Console.WriteLine("UPDATING");
+						Console.ResetColor();
+
+						UpdatingComponent.Instance.DownloadUpdater();
+						Environment.Exit(0);
+					}
+					else
+					{
+						ChangeColor(ConsoleColor.Green);
+						Console.WriteLine("NORMAL");
+						Console.ResetColor();
+					}
+
+
 					Console.Write("Enter your key: ");
 					var key = Console.ReadLine();
 
@@ -39,13 +68,40 @@ namespace Krypton.MinimalLoader
 					var locale_short = hardware.GetLocale().GetShortLocale();
 
 					Console.Write("Authorize key ... \t\t");
+					var reply = net.SendAndWait(new GetKeyAuth() { Hardware = hardware_id, Key = key, LocaleCode = locale_code, LocaleShort = locale_short, ActivateDate = DateTime.Now });
+					
+					Data = reply;
+					Stage2();
+				}
+				else
+				{
+					ChangeColor(ConsoleColor.Red);
+					Console.WriteLine($"ERROR");
+					Console.WriteLine("Error message: Cannot initialize the network subsystem. Check your internet connection and try again");
+					Console.ResetColor();
+				}
+			}
+			else
+			{
+				ChangeColor(ConsoleColor.Red);
+				Console.WriteLine("ERROR");
+				Console.WriteLine($"Error message: {msg}");
+			}
 
-					var task = net.SendAndWait(new GetKeyAuth() { Hardware = hardware_id, Key = key, LocaleCode = locale_code, LocaleShort = locale_short, ActivateDate = DateTime.Now });
-					task.Wait();
+			Console.ResetColor();
+			Console.WriteLine("Press any key to continue ...");
+			Console.ReadKey();
+		}
 
-					var result = task.Result;
-					var packet = result.PacketContent.Convert<SetKeyAuth>();
-					if (packet.Result)
+		private static void Stage2()
+		{
+			var result = Data;
+			if (result != null)
+			{
+				if (result.PacketContent.Identifier == (int)Packets.SetKeyAuth)
+				{
+					var reply = result.PacketContent.Convert<SetKeyAuth>();
+					if (reply.Result)
 					{
 						ChangeColor(ConsoleColor.Green);
 						Console.WriteLine("OK");
@@ -56,13 +112,13 @@ namespace Krypton.MinimalLoader
 						try
 						{
 							var http = HttpComponent.Instance;
-							if (http.Download(packet.TempDownloadString, out string path))
+							if (http.Download(reply.TempDownloadString, out string path))
 							{
 								ChangeColor(ConsoleColor.Green);
 								Console.WriteLine("OK");
 								Console.ResetColor();
 
-								Console.WriteLine($"Expiration date: {packet.RemainingTime}");
+								Console.WriteLine($"Expiration date: {reply.RemainingTime}");
 
 								var starter_component = new ProcessStarterComponent();
 								var injection = InjectionComponent.Instance;
@@ -116,22 +172,22 @@ namespace Krypton.MinimalLoader
 					}
 					else
 					{
-						if (packet.TempDownloadString == "nil")
+						if (reply.Message == "nil")
 						{
 							//TODO: send log for attempt hack datetime logic
 						}
 
 						ChangeColor(ConsoleColor.Red);
 						Console.WriteLine("ERROR");
-						Console.WriteLine($"Error message: {packet.Message}");
+						Console.WriteLine($"Error message: {reply.Message}");
 						Console.ResetColor();
 					}
 				}
 				else
 				{
 					ChangeColor(ConsoleColor.Red);
-					Console.WriteLine($"ERROR");
-					Console.WriteLine("Error message: Cannot initialize the network subsystem. Check your internet connection and try again");
+					Console.WriteLine("ERROR");
+					Console.WriteLine($"Error message: Internal loader error! 0x00000004");
 					Console.ResetColor();
 				}
 			}
@@ -139,7 +195,8 @@ namespace Krypton.MinimalLoader
 			{
 				ChangeColor(ConsoleColor.Red);
 				Console.WriteLine("ERROR");
-				Console.WriteLine($"Error message: {msg}");
+				Console.WriteLine($"Error message: Network error! 0x00000008");
+				Console.ResetColor();
 			}
 
 			Console.ResetColor();
@@ -161,7 +218,7 @@ namespace Krypton.MinimalLoader
 			string generated = "";
 
 			var rand = new Random();
-			for(var i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 			{
 				generated += alphabet[rand.Next(0, alphabet.Length - 1)];
 			}

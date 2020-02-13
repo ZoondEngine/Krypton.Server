@@ -13,8 +13,9 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 
 		public void OnError(Exception error)
 		{
-			NetworkComponent.Instance.GetLog()?.Error($"Internal network core error: {error.ToString()}");
-			NetworkComponent.Instance.GetIO().GetPrint().Error($"Internal exception in network module:\n {error}");
+			//NetworkComponent.Instance.GetLog()?.Error($"Internal network core error: {error.ToString()}");
+			//NetworkComponent.Instance.GetIO().GetPrint().Error($"Internal exception in network module:\n {error}");
+			//NetworkComponent.Instance.GetIO().GetPrint().Trace("Abnormal disconnected from tunnel. Client: unknown");
 		}
 
 		public void OnNext(BaseData value)
@@ -31,12 +32,12 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 			if(conn.NativeClient.Connected)
 			{
 				log?.Debug($"Client: {conn.Identifier} has been accepted. EndPoint: {conn.NativeClient.Client.RemoteEndPoint}");
-				NetworkComponent.Instance.GetIO().GetPrint().Trace($"Client: {conn.Identifier} has been accepted");
+				NetworkComponent.Instance.GetIO().GetPrint().Trace($"Client: {conn.NativeClient.Client.RemoteEndPoint} has been accepted");
 			}
 			else
 			{
 				log?.Debug($"Client: {conn.Identifier} has been disconnected");
-				NetworkComponent.Instance.GetIO().GetPrint().Trace($"Client: {conn.Identifier} has been disconnected");
+				NetworkComponent.Instance.GetIO().GetPrint().Trace($"Client: {conn.NativeClient.Client.RemoteEndPoint} has been disconnected");
 			}
 		}
 	}

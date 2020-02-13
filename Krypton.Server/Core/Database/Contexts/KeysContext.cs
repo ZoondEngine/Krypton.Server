@@ -5,26 +5,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Krypton.Server.Core.Database.Contexts
 {
-    public class KeysContext : DbContext
-    {
-        public DbSet<KeyPacket> KeyPackets { get; set; }
-        public DbSet<Key> Keys { get; set; }
+	public class KeysContext : DbContext
+	{
+		public DbSet<KeyPacket> KeyPackets { get; set; }
+		public DbSet<Key> Keys { get; set; }
 
-        public KeysContext()
-        { }
+		public KeysContext()
+		{ }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseMySql("server=localhost;UserId=root;Password=12589635Ff;database=evilcorp;");
-            //options.UseLoggerFactory(DatabaseLoggerFactory);
-        }
+		protected override void OnConfiguring(DbContextOptionsBuilder options)
+		{
+			var cfg = DatabaseMgr.Instance.GetConfig();
+			var host = cfg.Read<string>("host");
+			var user = cfg.Read<string>("user");
+			var password = cfg.Read<string>("password");
+			var db = cfg.Read<string>("database");
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
+			options.UseMySql($"server={host};UserId={user};Password={password};database={db};");
+			//options.UseLoggerFactory(DatabaseLoggerFactory);
+		}
 
-        //public static readonly ILoggerFactory DatabaseLoggerFactory
-        //    = LoggerFactory.Create(builder => builder.AddProvider(new KeysContextLogger()));
-    }
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+		}
+
+		//public static readonly ILoggerFactory DatabaseLoggerFactory
+		//    = LoggerFactory.Create(builder => builder.AddProvider(new KeysContextLogger()));
+	}
 }

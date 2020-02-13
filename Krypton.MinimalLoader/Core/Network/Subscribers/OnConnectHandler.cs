@@ -26,11 +26,11 @@ namespace Krypton.MinimalLoader.Core.Network.Subscribers
 
 			if (conn.IsConnected)
 			{
-				Console.WriteLine($"Connected: {conn.Identifier}");
+				//Console.WriteLine($"Connected: {conn.Identifier}");
 			}
 			else
 			{
-				Console.WriteLine($"Disconnected: {conn.Identifier}");
+				//Console.WriteLine($"Disconnected: {conn.Identifier}");
 			}
 		}
 	}

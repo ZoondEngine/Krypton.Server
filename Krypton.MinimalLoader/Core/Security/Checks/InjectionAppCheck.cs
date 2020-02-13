@@ -28,7 +28,7 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 			}
 			catch
 			{
-				message = "Restart loader please and try again (0x00000371)";
+				message = "Abnormal prepared. Please restart loader";
 				return false;
 			}
 

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Krypton.MinimalLoader.Core.Security.Checks
 {
@@ -18,22 +14,22 @@ namespace Krypton.MinimalLoader.Core.Security.Checks
 
 		public bool Check(out string message)
 		{
-			if (Debugger.IsAttached || IsDebuggerPresent())
-			{
-				message = "Debugger detected. Your PC information has been sended on server for analyze";
-				return false;
-			}
-			else
-			{
-				bool attached = false;
-				CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref attached);
+			//if (Debugger.IsAttached || IsDebuggerPresent())
+			//{
+			//	message = "Debugger detected. Your PC information has been sended on server for analyze";
+			//	return false;
+			//}
+			//else
+			//{
+			//	bool attached = false;
+			//	CheckRemoteDebuggerPresent(Process.GetCurrentProcess().Handle, ref attached);
 
-				if (attached)
-				{
-					message = "Debugger detected. Your PC information has been sended on server for analyze";
-					return false;
-				}
-			}
+			//	if (attached)
+			//	{
+			//		message = "Debugger detected. Your PC information has been sended on server for analyze";
+			//		return false;
+			//	}
+			//}
 
 			message = "";
 			return true;
