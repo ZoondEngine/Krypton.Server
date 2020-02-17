@@ -14,7 +14,20 @@ namespace Krypton.Server.Core.Updating
 		public UpdatingComponent()
 		{
 			m_config = Ini.IniComponent.Instance.GetByName("updating-native-configuration").As<UpdatingConfiguration>();
-			IsDeclineDownloadHack = m_config.Read<bool>("allow_from_start", "dll");
+			IsDeclineDownloadHack = m_config.Read<bool>("decline_downloading", "dll");
+		}
+
+		public void ReloadSettings(bool save)
+		{
+			if(save)
+			{
+				GetConfig().GetNativeIni().Save(GetConfig().GetPath());
+			}
+
+			m_config = null;
+			m_config = Ini.IniComponent.Instance.GetByName("updating-native-configuration").As<UpdatingConfiguration>();
+
+			IsDeclineDownloadHack = m_config.Read<bool>("decline_downloading", "dll");
 		}
 
 		public UpdatingConfiguration GetConfig()

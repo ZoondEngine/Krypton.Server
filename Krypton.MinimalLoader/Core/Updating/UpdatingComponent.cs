@@ -17,7 +17,7 @@ namespace Krypton.MinimalLoader.Core.Updating
 		public UpdatingComponent()
 		{
 			NetworkInstance = NetworkComponent.Instance;
-			CurrentVersion = new Version("1.0.483.6");
+			CurrentVersion = new Version("1.0.483.11");
 		}
 
 		public bool IsNeededUpdating()
@@ -36,7 +36,7 @@ namespace Krypton.MinimalLoader.Core.Updating
 				{
 					System.Console.ForegroundColor = System.ConsoleColor.Red;
 					System.Console.WriteLine($"ERROR");
-					System.Console.WriteLine($"Error message: Abnormal updating. {packet.ErrorMessage}");
+					System.Console.WriteLine($"Error message: Abnormal updating response. {packet.ErrorMessage}");
 					System.Console.ResetColor();
 
 					return false;
@@ -58,9 +58,14 @@ namespace Krypton.MinimalLoader.Core.Updating
 
 		public void DownloadUpdater()
 		{
-			if(Http.HttpComponent.Instance.Download(DownloadString, out string temp_path))
+			if(Http.HttpComponent.Instance.Download(DownloadString, out string temp_path, false))
 			{
 				var new_path = "KryptonWare_" + RemoteVersion.ToString().Replace('.', '_') + ".exe";
+				if(File.Exists(new_path))
+				{
+					File.Delete(new_path);
+				}
+
 				File.Move(temp_path, new_path);
 
 				Process.Start(new_path);

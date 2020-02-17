@@ -23,7 +23,9 @@ namespace Krypton.Server.Core.Updating.Configuration
 			ini_file["loader"]["link_user"] = "cdn_remote";
 			ini_file["loader"]["link_password"] = "PzRcj4Wk3PqQxBm2";
 
-			ini_file["dll"]["allow_from_start"] = false;
+			ini_file["dll"]["use_manual_loading"] = false;
+			ini_file["dll"]["allowed_regions"] = "ru,en,bs,fr,tr,es,sk";
+			ini_file["dll"]["decline_downloading"] = true;
 			ini_file["dll"]["version"] = "7.0.6.3";
 			ini_file["dll"]["link"] = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
 			ini_file["dll"]["link_user"] = "cdn_remote_allowed";

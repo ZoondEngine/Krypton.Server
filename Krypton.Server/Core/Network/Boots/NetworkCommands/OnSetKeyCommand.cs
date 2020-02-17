@@ -22,6 +22,47 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 			Console.WriteLine($"Internal error catched while process SetKeyCommand( ... ): \n{error.ToString()}");
 		}
 
+		private bool IsAllowedRegion(Database.Models.Key key, string input_region)
+		{
+			var config = Updating.UpdatingComponent.Instance.GetConfig();
+			var regions = config.Read<string>("allowed_regions", "dll").Split(',');
+			var use_manual = config.Read<bool>("use_manual_loading", "dll");
+
+			if(use_manual)
+			{
+				if (key.RegionCode.ToLower() == input_region.ToLower() || key.RegionCode.ToLower() == "any")
+				{
+					return regions.FirstOrDefault((x) => x.ToLower() == input_region.ToLower()) != null;
+				}
+			}
+			else
+			{
+				if(input_region.ToLower() == key.RegionCode.ToLower())
+				{
+					return true;
+				}
+				else
+				{
+					if (key.RegionCode.ToLower() == "any")
+					{
+						return true;
+					}
+					else
+					{
+						if (key.RegionCode.ToLower() == "ru")
+						{
+							if (input_region.ToLower() == "be" || input_region.ToLower() == "uk")
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
 		public void OnNext(BaseData value)
 		{
 			string message = "";
@@ -46,42 +87,39 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 							//Console.WriteLine("parent packet");
 							if (!db_key.IsBlocked() & !parent_packet.IsBlocked())
 							{
-								//Console.WriteLine("not blocked");
-								if (db_key.RegionCode.ToLower() == packet.LocaleShort.ToLower() || db_key.Enabled == 0)
+								if(IsAllowedRegion(db_key, packet.LocaleShort))
 								{
-									//if(db_key.EndAt >= packet.ActivateDate || db_key.EndAt >= DateTime.Now)
-									//{
-										if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
+									if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
+									{
+										var between = DateTime.Now.Day - packet.ActivateDate.Day;
+										if (between <= 1 && between >= -1)
 										{
-											var between = DateTime.Now.Day - packet.ActivateDate.Day;
-											if (between <= 1 && between >= -1)
+											//Console.WriteLine("between");
+											if (db_key.Hardware == null | db_key.Hardware == "")
 											{
-												//Console.WriteLine("between");
-												if (db_key.Hardware == null | db_key.Hardware == "")
+												//Console.WriteLine("!hardware");
+												if (db_key.EndAt == null & db_key.ActivatedAt == null)
 												{
-													//Console.WriteLine("!hardware");
-													if (db_key.EndAt == null & db_key.ActivatedAt == null)
-													{
-														db_key.ActivatedAt = packet.ActivateDate;
-														db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
-													}
-
-													db_key.Hardware = packet.Hardware;
-
-													var config = Updating.UpdatingComponent.Instance.GetConfig();
-
-													result = true;
-													//temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
-													temp_download = config.Read<string>("link", "dll");
-													remaining = db_key.EndAt.Value;
-
-													keys_context.SaveChanges();
+													db_key.ActivatedAt = packet.ActivateDate;
+													db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
 												}
-												else
+
+												db_key.Hardware = packet.Hardware;
+
+												var config = Updating.UpdatingComponent.Instance.GetConfig();
+
+												result = true;
+												//temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
+												temp_download = config.Read<string>("link", "dll");
+												remaining = db_key.EndAt.Value;
+
+												keys_context.SaveChanges();
+											}
+											else
+											{
+												//Console.WriteLine("hardware");
+												if (db_key.Hardware == packet.Hardware)
 												{
-													//Console.WriteLine("hardware");
-													if (db_key.Hardware == packet.Hardware)
-													{
 													if (db_key.EndAt > packet.ActivateDate || db_key.EndAt > DateTime.Now)
 													{
 														//Console.WriteLine("compared. Done");
@@ -95,104 +133,30 @@ namespace Krypton.Server.Core.Network.Boots.NetworkCommands
 													{
 														message = "Key expired";
 													}
-													}
-													else
-													{
-														NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
-														message = "Key or hardware identifier doesn't match";
-													}
-												}
-											}
-											else
-											{
-												NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
-
-												message = "Unknown time difficult exception";
-												temp_download = "nil";
-											}
-										}
-										else
-										{
-											message = "Krypton updating now. Please try again later";
-										}
-									//}
-									//else
-									//{
-									//	message = "Key expired";
-									//}
-								}
-								else
-								{
-									//Console.WriteLine("ru1");
-									if (db_key.RegionCode.ToLower() == "ru")
-									{
-										//Console.WriteLine("ru2");
-										if (packet.LocaleShort.ToLower() == "be" || packet.LocaleShort.ToLower() == "uk")
-										{
-											//Console.WriteLine("be or uk");
-											if (!Updating.UpdatingComponent.Instance.IsDeclineDownloadHack)
-											{
-												//Console.WriteLine("allowed");
-												var between = DateTime.Now.Day - packet.ActivateDate.Day;
-												if (between <= 1 && between >= -1)
-												{
-													//Console.WriteLine("between");
-													if (db_key.Hardware == null | db_key.Hardware == "")
-													{
-														//Console.WriteLine("!hardware");
-														if (db_key.EndAt == null & db_key.ActivatedAt == null)
-														{
-															db_key.ActivatedAt = packet.ActivateDate;
-															db_key.EndAt = packet.ActivateDate.AddDays(db_key.Days);
-														}
-
-														db_key.Hardware = packet.Hardware;
-
-														result = true;
-														temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
-														remaining = db_key.EndAt.Value;
-
-														keys_context.SaveChanges();
-													}
-													else
-													{
-														//Console.WriteLine("hardware");
-														if (db_key.Hardware == packet.Hardware)
-														{
-															//Console.WriteLine("compared.done");
-															result = true;
-															temp_download = "http://control.kryptonware.xyz/storage/storage/app/updated/loader.exe";
-															remaining = db_key.EndAt.Value;
-														}
-														else
-														{
-															NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
-															message = "Key or hardware identifier doesn't match";
-														}
-													}
 												}
 												else
 												{
-													NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
-
-													message = "Unknown time difficult exception";
-													temp_download = "nil";
+													NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0002(HARDWARE INVALID). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+													message = "Key or hardware identifier doesn't match";
 												}
-											}
-											else
-											{
-												message = "Krypton updating now. Please try again later";
 											}
 										}
 										else
 										{
-											message = "Incorrect country for key or your contry market not supported";
+											NetworkComponent.Instance.GetLog().Error($"HACKING ATTEMPT! Code 0x0001(CHANGE DATETIME). HARDWARE: {packet.Hardware} - KEY: {packet.Key}");
+
+											message = "Unknown time difficult exception";
+											temp_download = "nil";
 										}
 									}
 									else
 									{
-										message = "Incorrect country for key or your contry market not supported";
+										message = "Krypton updating now. Please try again later";
 									}
+								}
+								else
+								{
+									message = "Incorrect country for key or your contry market not supported";
 								}
 							}
 							else

@@ -212,6 +212,7 @@
     <Compile Include="Core\Network\Configuration\NetworkConfiguration.cs" />
     <Compile Include="Core\Network\NetworkComponent.cs" />
     <Compile Include="Core\Updating\Commands\DeclineDownloadingCommand.cs" />
+    <Compile Include="Core\Updating\Commands\UpdateConfigCommand.cs" />
     <Compile Include="Core\Updating\Configuration\UpdatingConfiguration.cs" />
     <Compile Include="Core\Updating\UpdatingComponent.cs" />
     <Compile Include="ServerBootstrap.cs" />

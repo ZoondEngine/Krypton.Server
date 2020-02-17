@@ -16,11 +16,6 @@ namespace Krypton.MinimalLoader
 	{
 		public static bool NextStage = false;
 		public static TcpNetworkData Data = null;
-
-		//public static string Result = "";
-		//public static string Message = "";
-		//public static string Expired = "";
-
 		static void Main(string[] args)
 		{
 			Console.Title = GenerateRandomWindowName();
@@ -46,7 +41,7 @@ namespace Krypton.MinimalLoader
 					if (UpdatingComponent.Instance.IsNeededUpdating())
 					{
 						ChangeColor(ConsoleColor.Yellow);
-						Console.WriteLine("UPDATING");
+						Console.WriteLine("UPDATING  ");
 						Console.ResetColor();
 
 						UpdatingComponent.Instance.DownloadUpdater();
@@ -139,7 +134,9 @@ namespace Krypton.MinimalLoader
 
 								//if(injection.SetupInjection(path, "sihost").Inject())
 								//{
-								//	Console.WriteLine("Done");
+								//	Console.ForegroundColor = ConsoleColor.Green;
+								//	Console.WriteLine("Done. Close loader and start the game");
+								//	Console.ResetColor();
 								//	Console.ReadKey();
 								//}
 								if (starter_component.IsRunned())
@@ -150,7 +147,7 @@ namespace Krypton.MinimalLoader
 								{
 									ChangeColor(ConsoleColor.Red);
 									Console.WriteLine("ERROR");
-									Console.WriteLine("Error message: Server technical failure. Try again later.");
+									Console.WriteLine("Error message: Starter component is already busy. Please restart loader");
 									Console.ResetColor();
 								}
 							}

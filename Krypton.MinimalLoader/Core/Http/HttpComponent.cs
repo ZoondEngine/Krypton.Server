@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 
 namespace Krypton.MinimalLoader.Core.Http
 {
@@ -29,7 +30,7 @@ namespace Krypton.MinimalLoader.Core.Http
 			Web = new WebClient();
 		}
 
-		public bool Download(string addr, out string file_path)
+		public bool Download(string addr, out string file_path, bool hidden = true)
 		{
 			Reset();
 
@@ -50,7 +51,24 @@ namespace Krypton.MinimalLoader.Core.Http
 					File.Delete(file_path);
 				}
 
-				Web.DownloadFile(addr, file_path);
+				using (var completedEvent = new ManualResetEventSlim(false))
+				{
+					Web.DownloadFileCompleted += (sender, args) =>
+					{
+						completedEvent.Set();
+						//Console.WriteLine(" DONE");
+					};
+					Web.DownloadProgressChanged += (sender, args) =>
+					{
+						if (!hidden)
+						{
+							drawTextProgressBar(args.ProgressPercentage, 100);
+						}
+					};
+					Web.DownloadFileAsync(new Uri(addr), file_path);
+					completedEvent.Wait();
+				}
+
 				if (File.Exists(file_path))
 				{
 					var bytes = File.ReadAllBytes(file_path);
@@ -64,6 +82,11 @@ namespace Krypton.MinimalLoader.Core.Http
 				file_path = "";
 				return false;
 			}
+		}
+
+		public static void drawTextProgressBar(int progress, int total)
+		{
+			Console.Write($"\r{progress}% of {total}%"); //blanks at the end remove any excess
 		}
 
 		public void DownloadAsync(string addr, string file_path)
