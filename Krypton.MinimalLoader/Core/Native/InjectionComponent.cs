@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using Lunar;
 
 namespace Krypton.MinimalLoader.Core.Native
 {
@@ -13,7 +12,6 @@ namespace Krypton.MinimalLoader.Core.Native
 		private string DllPath;
 		private string ProcessName;
 		private Process NotepadProcess;
-		private IntPtr NotePadManualHandle = IntPtr.Zero;
 
 		public InjectionComponent()
 		{

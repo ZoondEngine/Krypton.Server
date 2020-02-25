@@ -1,9 +1,4 @@
 ﻿using Krypton.Support.CodeAnalyzer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Krypton.MinimalLoader
 {
@@ -12,7 +7,7 @@ namespace Krypton.MinimalLoader
         private Core.CodeExecutor.CodeExecuteComponent CodeEvaluator { get; set; }
         private Core.Hardware.HardwareComponent Hardware { get; set; }
         private Core.Http.HttpComponent Http { get; set; }
-        private Core.Hyperthreading.ThreadingComponent Threads { get; set; }
+        private Core.Threading.ThreadPoolComponent Threads { get; set; }
         private Core.Network.NetworkComponent Network { get; set; }
         private Core.Prompt.PromptComponent Prompt { get; set; }
         private Core.Security.SecurityComponent Security { get; set; }
@@ -39,7 +34,7 @@ namespace Krypton.MinimalLoader
         public Core.Http.HttpComponent GetHttp()
             => Http;
 
-        public Core.Hyperthreading.ThreadingComponent GetThreading()
+        public Core.Threading.ThreadPoolComponent GetThreading()
             => Threads;
 
         public Core.Network.NetworkComponent GetNetwork()
@@ -66,7 +61,7 @@ namespace Krypton.MinimalLoader
             CodeEvaluator = Core.CodeExecutor.CodeExecuteComponent.Instance;
             Hardware = Core.Hardware.HardwareComponent.Instance;
             Http = Core.Http.HttpComponent.Instance;
-            Threads = Core.Hyperthreading.ThreadingComponent.Instance;
+            Threads = Core.Threading.ThreadPoolComponent.Instance;
             Network = Core.Network.NetworkComponent.Instance;
             Prompt = Core.Prompt.PromptComponent.Instance;
             Security = Core.Security.SecurityComponent.Instance;
