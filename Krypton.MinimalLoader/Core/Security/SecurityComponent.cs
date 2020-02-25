@@ -30,6 +30,23 @@ namespace Krypton.MinimalLoader.Core.Security
 			return true;
 		}
 
+		public bool IsDebug()
+			=> true;
+
+		public string GetRandomWindowName(int length)
+		{
+			string alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOASDFGHJKLZXCVBNM1234567890";
+			string generated = "";
+
+			var rand = new Random();
+			for (var i = 0; i < length; i++)
+			{
+				generated += alphabet[rand.Next(0, alphabet.Length - 1)];
+			}
+
+			return generated;
+		}
+
 		private List<ISecurityCheck> GetCheckers()
 		{
 			return Assembly
